@@ -11,8 +11,8 @@ public class Hooks extends TestBase {
 
     @Before
     public void before(Scenario scenario) {
-        androidSetUpPDNoResetFalse();
-//        androidSetUpPDNoResetTrue();
+//        androidSetUpPDNoResetFalse();
+        androidSetUpPDNoResetTrue();
         beforeScenario(scenario);
     }
 

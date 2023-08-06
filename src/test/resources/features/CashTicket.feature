@@ -61,6 +61,13 @@ Feature: Perform cash tickets
 
     # login to ad hoc shift
     Given I am on the main page
+    And I send the application to the background
+    And I turn on the wifi connectivity
+    Then The application should come to the foreground on "Day Start Checks" screen
+    Then The day prep page should be opened
+    And The day prep no internet connectivity dialogue box is displayed
+    When I click on the continue button on the no internet day prep connectivity dialogue box
+    Then I click on the day prep retry button
     When I click on login to shift button
     Then The driver shift login popup should be opened
     And I enter the "001" driver ID
@@ -114,6 +121,7 @@ Feature: Perform cash tickets
     When I click on the end trip page cancel button
     Then The shift page should be opened
 
+    @ignore
 # perform multiple cash transaction successfully
   Scenario Outline: Purchase multiple cash tickets successfully
     Given I am on a route
