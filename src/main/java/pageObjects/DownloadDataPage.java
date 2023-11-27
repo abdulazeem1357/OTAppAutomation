@@ -10,14 +10,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class DownloadDataPage extends BasePage {
-    private final AndroidDriver driver;
-    private static final String DOWNLOAD_SUCCESS_MESSAGE = "Data download completed: \n" + "Publication Data downloaded successfully";
-    private static final String DOWNLOAD_FAILURE_MESSAGE = "Publication download failed: Unable to get publication list from server";
     private final Waiting waiting;
 
     public DownloadDataPage(AndroidDriver androidDriver) {
         super(androidDriver);
-        driver = androidDriver;
         waiting = new Waiting(driver);
     }
 
@@ -43,7 +39,7 @@ public class DownloadDataPage extends BasePage {
     private WebElement backButton;
 
     public String getDownloadDataPageTitle() {
-        return waiting.getText(downloadDataPageTitle).getText();
+        return waiting.getText(downloadDataPageTitle);
 //        return getText(downloadDataPageTitle);
     }
 
@@ -52,7 +48,7 @@ public class DownloadDataPage extends BasePage {
     }
 
     public String getDialogueHeader() {
-        return waiting.getText(DialogueHeader).getText();
+        return waiting.getText(DialogueHeader);
     }
 
     public void clickDialogueOkButton() {
@@ -66,16 +62,16 @@ public class DownloadDataPage extends BasePage {
 //        wait.until(ExpectedConditions.attributeToBe(progressPercentage, "text", "50%"));
 //        wait.until(ExpectedConditions.attributeToBe(progressPercentage, "text", "75%"));
 //        wait.until(ExpectedConditions.attributeToBe(progressPercentage, "text", "99%"));
-        wait.until(ExpectedConditions.textToBePresentInElement(dialogueMessage, DOWNLOAD_SUCCESS_MESSAGE));
+        wait.until(ExpectedConditions.textToBePresentInElement(dialogueMessage, ConstantsPage.DOWNLOAD_SUCCESS_MESSAGE));
 
-        return waiting.waitForTextToBePresentInElement(dialogueMessage, DOWNLOAD_SUCCESS_MESSAGE).getText();
+        return waiting.waitForTextToBePresentInElement(dialogueMessage, ConstantsPage.DOWNLOAD_SUCCESS_MESSAGE).getText();
     }
 
     public String getUnsuccessfulDialogueMessage() {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(300));
-        wait.until(ExpectedConditions.textToBePresentInElement(dialogueMessage, DOWNLOAD_FAILURE_MESSAGE));
+        wait.until(ExpectedConditions.textToBePresentInElement(dialogueMessage, ConstantsPage.DOWNLOAD_FAILURE_MESSAGE));
 
-        return waiting.waitForTextToBePresentInElement(dialogueMessage, DOWNLOAD_FAILURE_MESSAGE).getText();
+        return waiting.waitForTextToBePresentInElement(dialogueMessage, ConstantsPage.DOWNLOAD_FAILURE_MESSAGE).getText();
     }
 
     public void clickBackButton() {

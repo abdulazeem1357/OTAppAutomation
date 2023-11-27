@@ -1,19 +1,12 @@
 package steps;
 
 import fundamental.AndroidBasics;
-import io.cucumber.java.After;
-import io.cucumber.java.Scenario;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import pageObjects.DownloadDataPage;
-import pageObjects.MainPage;
-import pageObjects.SideMenuComponent;
 import tests.TestBase;
 import utils.AppConstants;
-
-import java.io.IOException;
 
 public class DownloadData extends TestBase {
     @When("I navigate to the settings page")

@@ -1,6 +1,6 @@
 Feature: Day preparation checks the application health. Download, and upload necessary files on the device.
 
-  #launch the application and perform successful login
+  # launch the application and perform successful login
   Background:
     # set the gps to if available
     Given I launch the application
@@ -22,16 +22,30 @@ Feature: Day preparation checks the application health. Download, and upload nec
     When I navigate to the settings page
     Then The settings page should be opened
 
+      # navigate to the terminal settings page
+    Given I am on the settings page
+    When I click on the terminal settings page button
+    Then The terminal settings page should be opened
+
+     # turn off the auto disable wifi
+    When I click on the auto disable wifi button
+    Then The auto disable wifi dialogue should be opened
+    And I click on the no button on the auto disable wifi dialogue
+    Then The auto disable wifi should be set to "No"
+
+    Then The terminal settings page should be opened
+    When I navigate to the settings page
+    Then The settings page should be opened
+
     # login to the terminal successfully
     Given I am on the settings page
     When I click on the login page button
     Then The login page should be opened
-    And I turn on the wifi connectivity
     When I click on the User ID button
-    And I give the terminal "pak0039" User ID
+    And I give the terminal "zaf0691" User ID
     Then I click ok to accept the username
     When I click on the password button
-    And I give the terminal "pak0039" password
+    And I give the terminal "zaf0691" password
     Then I click ok to accept the password
     When I click on the terminal server button
     And I select the "Putco Stg" environment
@@ -84,8 +98,28 @@ Feature: Day preparation checks the application health. Download, and upload nec
     When The day prep checks should be completed successfully
     Then The main page should be opened
 
+    # run day prep activity on relaunch of the application
   Scenario: Run day prep activity on relaunch of the application
     Given I am on the main page
+    When I send the application to the background
+    Then The day prep page should be opened
+    And The connectivity check should be passed
+    And The firmware check should be passed
+    And The configuration check should be passed
+    And The download data check should be passed
+    And The data reconciliation check should be passed
+    And The data purge check should be passed
+    And The logs sync check should be passed
+    And The commands sync check should be passed
+    And The notification sync check should be passed
+#    And The hardware validation check should be passed
+    When The day prep checks should be completed successfully
+    Then The main page should be opened
+
+    # run day prep activity with no internet connectivity
+  Scenario: Run day prep activity on relaunch of the application
+    Given I am on the main page
+    And I turn off the wifi connectivity
     When I send the application to the background
     And I turn on the wifi connectivity
     Then The application should come to the foreground on "Day Start Checks" screen

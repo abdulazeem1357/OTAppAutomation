@@ -12,10 +12,6 @@ public class SettingsPage extends BasePage {
         super(androidDriver);
         waiting = new Waiting(androidDriver);
     }
-
-    private static final String hardwareSettingsButton = "Hardware Setting";
-    private static final String loginButton = "Log In";
-
     @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout[1]/android.widget.FrameLayout/android.widget.ListView/android.widget.TextView")
     private WebElement settingsPageTitle;
 
@@ -24,11 +20,15 @@ public class SettingsPage extends BasePage {
     }
 
     public void clickLoginPageButton() {
-        waiting.waitForTextToBePresentInList(getSettingsMenuItems(), loginButton).click();
+        waiting.waitForTextToBePresentInList(getSettingsMenuItems(), ConstantsPage.loginButton).click();
     }
 
     public void clickHardwareSettingsPageButton() {
-        waiting.waitForTextToBePresentInList(getSettingsMenuItems(), hardwareSettingsButton).click();
+        waiting.waitForTextToBePresentInList(getSettingsMenuItems(), ConstantsPage.hardwareSettingsButton).click();
+    }
+
+    public void clickTerminalSettingsPageButton() {
+        waiting.waitForTextToBePresentInList(getSettingsMenuItems(), ConstantsPage.terminalSettingsButton).click();
     }
 
     public String getSettingsMenuItems() {

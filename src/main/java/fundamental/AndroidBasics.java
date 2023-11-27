@@ -1,5 +1,6 @@
 package fundamental;
 
+import io.appium.java_client.android.Activity;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.connection.ConnectionState;
 import org.openqa.selenium.By;
@@ -17,6 +18,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class AndroidBasics extends BasePage {
     private static final MyLogger logger = MyLogger.getInstance();
@@ -120,8 +122,13 @@ public class AndroidBasics extends BasePage {
         if (changesMade) {
             logger.logInfo("Waiting for connectivity to stabilize");
             try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            try {
                 // Wait for internet connectivity to stabilize
-                int retries = 5;
+                int retries = 2;
                 while (retries > 0 && !isInternetConnected()) {
                     Thread.sleep(5000);
                     retries--;
@@ -196,7 +203,11 @@ public class AndroidBasics extends BasePage {
     }
 
     public static void moveAppToBackgroundForFiveSeconds() {
-        driver.runAppInBackground(Duration.ofSeconds(5));
+        try {
+            driver.runAppInBackground(Duration.ofSeconds(5));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void scroll(WebElement element, Direction direction) {
@@ -261,5 +272,21 @@ public class AndroidBasics extends BasePage {
                 .addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
 
         driver.perform(Collections.singletonList(sequence));
+    }
+
+    public static void checkAppForegroundStatus() {
+        boolean isAppInForeground = Objects.equals(driver.currentActivity(), "com.bps.bpass.activites.appcompat.MainAppCompatTapActivity");
+
+        if (isAppInForeground) {
+            System.out.println("The App in Foreground is: " + driver.currentActivity());
+        }
+        else {
+            try {
+                driver.startActivity(new Activity("com.bps.bpass.mainpackage", "com.bps.bpass.activites.appcompat.MainAppCompatTapActivity"));
+                System.out.println("App is brought to foreground: " + driver.currentActivity());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -16,14 +16,17 @@ import java.util.Map;
 
 public class HttpClientHelper {
     private CloseableHttpClient httpClient;
+    private String bearerToken;  // To store the token for reuse
 
     public HttpClientHelper() {
         this.httpClient = HttpClients.custom().disableCookieManagement().build();
     }
 
-    public String sendPOST(String url, String jsonData) {
-        AndroidBasics.turnOnInternetConnectivity();
+    public void setBearerToken(String token) {
+        this.bearerToken = token;
+    }
 
+    public String sendPOST(String url, String jsonData) {
         try {
             return sendPOST(url, jsonData, Collections.emptyMap());
         } catch (Exception e) {
@@ -50,16 +53,17 @@ public class HttpClientHelper {
     }
 
     public String sendPOST(String url, String jsonData, Map<String, String> headers) {
-        AndroidBasics.turnOnInternetConnectivity();
-
         HttpPost post = new HttpPost(url);
 
         try {
             post.setEntity(new StringEntity(jsonData));
             post.setHeader("Content-Type", "application/json");
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                post.setHeader(header.getKey(), header.getValue());
+
+            if (bearerToken != null && !bearerToken.isEmpty()) {
+                post.setHeader("Authorization", "Bearer " + bearerToken);
             }
+
+            headers.forEach(post::setHeader);
 
             HttpResponse response = httpClient.execute(post);
             return EntityUtils.toString(response.getEntity());
@@ -79,8 +83,6 @@ public class HttpClientHelper {
     }
 
     public String sendPOSTWithBearerToken(String url, String bearerToken, String jsonData, Map<String, String> headers) {
-        AndroidBasics.turnOnInternetConnectivity();
-
         HttpPost post = new HttpPost(url);
 
         try {
@@ -99,8 +101,6 @@ public class HttpClientHelper {
     }
 
     public String sendPOSTWithBasicAuth(String url, String username, String password, String jsonData) {
-        AndroidBasics.turnOnInternetConnectivity();
-
         try {
             return sendPOSTWithBasicAuth(url, username, password, jsonData, Collections.emptyMap());
         } catch (Exception e) {
@@ -109,8 +109,6 @@ public class HttpClientHelper {
     }
 
     public String sendPOSTWithBasicAuth(String url, String username, String password, String jsonData, Map<String, String> headers) {
-        AndroidBasics.turnOnInternetConnectivity();
-
         HttpPost post = new HttpPost(url);
 
         try {
@@ -121,9 +119,8 @@ public class HttpClientHelper {
             byte[] encodedAuth = Base64.getEncoder().encode(auth.getBytes(StandardCharsets.ISO_8859_1));
             String authHeader = "Basic " + new String(encodedAuth);
             post.setHeader("Authorization", authHeader);
-            for (Map.Entry<String, String> header : headers.entrySet()) {
-                post.setHeader(header.getKey(), header.getValue());
-            }
+
+            headers.forEach(post::setHeader);
 
             HttpResponse response = httpClient.execute(post);
             return EntityUtils.toString(response.getEntity());

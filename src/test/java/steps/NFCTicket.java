@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fundamental.AndroidBasics;
 import fundamental.ConfigReader;
 import fundamental.MyLogger;
+import io.appium.java_client.android.Activity;
+import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
@@ -13,16 +16,18 @@ import io.cucumber.java.en.When;
 import org.json.JSONObject;
 import tests.TestBase;
 import utils.HttpClientHelper;
+import utils.InfrastructureEnv;
 import utils.TicketRequest;
 import utils.TicketRequestBuilder;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class NFCTicket extends TestBase {
-
     private String USERNAME;
     private String PASSWORD;
     private String NOTIFICATION_URL;
@@ -34,11 +39,25 @@ public class NFCTicket extends TestBase {
     private String SVCData;
     private HttpClientHelper httpClientHelper;
     private ConfigReader configReader;
+    private static String bearerToken;  // Declare the bearerToken here
+    private String ticketRequestUID;
 
-    @Before
+
+    @Before("@NFCTicket")
     public void setup() {
+        System.out.println("Setting-up the Bearer Token!");
         getConfigReader();
         createHttpService();
+        if (bearerToken == null) {
+            bearerToken = getBearerToken();
+            httpClientHelper.setBearerToken(bearerToken);
+        }
+    }
+
+    @After("@NFCTicket")
+    public void end() {
+        destroyHttpService();
+        System.out.println("Destroying the HTTP Service!");
     }
 
     private void getConfigReader() {
@@ -72,76 +91,20 @@ public class NFCTicket extends TestBase {
     }
 
     private String getBearerToken() {
+        if (bearerToken != null) {
+            return bearerToken;  // return the cached token
+        }
+
         Map<String, String> headers = new HashMap<>();
         headers.put("X-client-id", X_CLIENT_ID);
         headers.put("X-client-secret", X_CLIENT_SECRET);
         headers.put("X-grant-type", X_GRANT_TYPE);
+
         String response = httpClientHelper.sendPost(SALES_API_URL + "accesstoken", headers);
         System.out.println("Access Token API Response: " + response);
-        String bearerToken = parseBearerToken(response);
-        System.out.println("Bearer Token: \n" + bearerToken);
-        return bearerToken;
-    }
-
-    @And("I have an expired ticket on NFC card")
-    public void iHaveAnExpiredTicketOnNFCCard() {
-        TicketRequest expiredTicketRequest = TicketRequestBuilder.expiredTicket().build();
-        String expiredRequestBody = expiredTicketRequest.createRequestBody();
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
-
-        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), expiredRequestBody, headers);
-        System.out.println("NFC ticket response: " + response);
-
-        SVCData = parseSVCData(response);
-        SVCData = formatSVCJSONForNotification(SVCData);
-        System.out.println("\nSVC DATA: \n" + SVCData);
-    }
-
-    @When("I tap NFC card with expired ticket on the left NFC reader")
-    public void iTapNFCCardWithExpiredTicketOnTheLeftNFCReader() {
-        String requestBody = tapInNFCTicket(SVCData);
-        String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
-        parseResponse(response);
-    }
-
-    @Then("The ticket is expired message should be displayed")
-    public void theTicketIsExpiredMessageShouldBeDisplayed() {
-        String requestBody = tapOutNFCTicket(SVCData);
-        String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
-        parseResponse(response);
-        destroyHttpService();
-    }
-    @And("I have a valid ticket on NFC card")
-    public void iHaveAValidTicketOnNFCCard() {
-        TicketRequest validTicketRequest = TicketRequestBuilder.validTicket().build();
-        String validRequestBody = validTicketRequest.createRequestBody();
-
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
-
-        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), validRequestBody, headers);
-        System.out.println("NFC ticket response: " + response);
-
-        SVCData = parseSVCData(response);
-        SVCData = formatSVCJSONForNotification(SVCData);
-        System.out.println("\nSVC DATA: \n" + SVCData);
-    }
-
-    @When("I tap NFC card with active ticket on the left NFC reader")
-    public void iTapNFCCardWithActiveTicketOnTheLeftNFCReader() {
-        String requestBody = tapInNFCTicket(SVCData);
-        String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
-        parseResponse(response);
-    }
-
-    @Then("The ticket is valid message should be displayed")
-    public void theTicketIsValidMessageShouldBeDisplayed() {
-        String requestBody = tapOutNFCTicket(SVCData);
-        String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
-        parseResponse(response);
-        destroyHttpService();
+        String token = parseBearerToken(response);
+        System.out.println("Bearer Token: \n" + token);
+        return token;
     }
 
     private void parseResponse(String response) {
@@ -184,154 +147,260 @@ public class NFCTicket extends TestBase {
     }
 
     private String tapInNFCTicket(String SVCData) {
-        String requestBody = "{\"IMEI\":\"351625111274519\",\"data\":{\"service\":\"NFC\",\"command\":\"TAP_SVC_JSON\",\"body\":{\"uuid\":\"8069F932000000\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
+        String device = InfrastructureEnv.getDevice();
+        String imei = InfrastructureEnv.getIMEIForDevice(device);
+
+        String requestBody = "{\"IMEI\":\"" + imei + "\",\"data\":{\"service\":\"NFC\",\"command\":\"TAP_SVC_JSON\",\"body\":{\"uuid\":\"" + getTicketRequestUID() + "\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
         MyLogger.getInstance().logInfo("request:" + requestBody);
         return requestBody;
     }
 
     private String tapOutNFCTicket(String SVCData) {
-        String requestBody = "{\"IMEI\":\"351625111274519\",\"data\":{\"service\":\"NFC\",\"command\":\"REMOVE_TAP_SVC_JSON\",\"body\":{\"uuid\":\"8069F932000000\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
+        String device = InfrastructureEnv.getDevice();
+        String imei = InfrastructureEnv.getIMEIForDevice(device);
+
+        String requestBody = "{\"IMEI\":\"" + imei + "\",\"data\":{\"service\":\"NFC\",\"command\":\"REMOVE_TAP_SVC_JSON\",\"body\":{\"uuid\":\"" + getTicketRequestUID() + "\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
         MyLogger.getInstance().logInfo("request:" + requestBody);
         return requestBody;
     }
 
-    @And("I have a valid ticket on NFC card with a transfer leg")
-    public void iHaveAValidTicketOnNFCCardWithATransferLeg() {
+    private String getTicketRequestUID() {
+        return ticketRequestUID;
     }
 
-    @And("I navigate to the transfer station")
-    public void iNavigateToTheTransferStation() {
+    private void setTicketRequestUID(TicketRequest ticketRequest) {
+        this.ticketRequestUID = ticketRequest.getUid();
+        System.out.println("In setTicketRequestUID Method: " + ticketRequestUID);
+    }
+
+    @When("I tap NFC card on the left NFC reader")
+    public void iTapNFCCardOnTheLeftNFCReader() {
+        AndroidBasics.checkAppForegroundStatus();
+        String requestBody = tapInNFCTicket(SVCData);
+        String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
+        System.out.println("Tap in is called");
+        parseResponse(response);
+    }
+
+    @Then("The {string} message should be displayed")
+    public void theMessageShouldBeDisplayed(String messageNFC) {
+        String requestBody = tapOutNFCTicket(SVCData);
+        String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
+        parseResponse(response);
+//        softAssert.assertEquals(routePage.getNFCBodyText(), messageNFC);
+    }
+
+    @And("I have an expired ticket on NFC card")
+    public void iHaveAnExpiredTicketOnNFCCard() {
+        TicketRequest expiredTicketRequest = new TicketRequestBuilder().expiredTicket().build();
+        setTicketRequestUID(expiredTicketRequest);
+        String expiredRequestBody = expiredTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), expiredRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
+    }
+
+    @And("I have a valid ticket on NFC card")
+    public void iHaveAValidTicketOnNFCCard() {
+        TicketRequest validTicketRequest = new TicketRequestBuilder().validTicket().build();
+        setTicketRequestUID(validTicketRequest);
+        String validRequestBody = validTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), validRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
+    }
+
+    @And("I have a valid ticket on NFC card with a transfer leg")
+    public void iHaveAValidTicketOnNFCCardWithATransferLeg() {
+        TicketRequest validTicketRequest = new TicketRequestBuilder().validTicket().build();
+        setTicketRequestUID(validTicketRequest);
+        String validRequestBody = validTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), validRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
     @And("I have multiple valid merchant tickets on the NFC card")
     public void iHaveMultipleValidMerchantTicketsOnTheNFCCard() {
+        TicketRequest multipleMerchantValidTicketRequest = new TicketRequestBuilder().multipleMerchantValidTicket().build();
+        setTicketRequestUID(multipleMerchantValidTicketRequest);
+        String multipleMerchantValidTicketRequestBody = multipleMerchantValidTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), multipleMerchantValidTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
     @And("I have a blocked NFC card")
     public void iHaveABlockedNFCCard() {
-    }
+        TicketRequest blockedNFCCardTicketRequest = new TicketRequestBuilder().blockedNFCCardTicket().build();
+        setTicketRequestUID(blockedNFCCardTicketRequest);
+        String blockedNFCCardTicketRequestBody = blockedNFCCardTicketRequest.createRequestBody();
 
-    @When("I tap the blocked NFC card on the left NFC reader")
-    public void iTapTheBlockedNFCCardOnTheLeftNFCReader() {
-    }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
 
-    @Then("The card is blocked message should be displayed")
-    public void theCardIsBlockedMessageShouldBeDisplayed() {
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), blockedNFCCardTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
     @And("I have a re-issued NFC card")
     public void iHaveAReIssuedNFCCard() {
-    }
+        TicketRequest reissueNFCCardTicketRequest = new TicketRequestBuilder().reissueNFCCardTicket().build();
+        setTicketRequestUID(reissueNFCCardTicketRequest);
+        String reissueNFCCardTicketRequestBody = reissueNFCCardTicketRequest.createRequestBody();
 
-    @When("I tap the re-issued NFC card with a valid ticket on the left NFC reader")
-    public void iTapTheReIssuedNFCCardWithAValidTicketOnTheLeftNFCReader() {
-    }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
 
-    @When("I tap the re-issued NFC card with a expired ticket on the left NFC reader")
-    public void iTapTheReIssuedNFCCardWithAExpiredTicketOnTheLeftNFCReader() {
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), reissueNFCCardTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
     @And("I have a disabled NFC card")
     public void iHaveADisabledNFCCard() {
-    }
+        TicketRequest disabledNFCCardTicketRequest = new TicketRequestBuilder().disabledNFCCardTicket().build();
+        setTicketRequestUID(disabledNFCCardTicketRequest);
+        String disabledNFCCardTicketRequestBody = disabledNFCCardTicketRequest.createRequestBody();
 
-    @When("I tap the disabled NFC card on the left NFC reader")
-    public void iTapTheDisabledNFCCardOnTheLeftNFCReader() {
-    }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
 
-    @Then("The card is disabled message should be displayed")
-    public void theCardIsDisabledMessageShouldBeDisplayed() {
-    }
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), disabledNFCCardTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
 
-    @And("I have a valid ticket on NFC card that does not work on the given day")
-    public void iHaveAValidTicketOnNFCCardThatDoesNotWorkOnTheGivenDay() {
-    }
-
-    @Then("The day is not allowed message should be displayed")
-    public void theDayIsNotAllowedMessageShouldBeDisplayed() {
-    }
-
-    @When("I perform a main leg transaction")
-    public void iPerformAMainLegTransaction() {
-    }
-
-    @And("I try to perform another main leg transaction within transfer leg")
-    public void iTryToPerformAnotherMainLegTransactionWithinTransferLeg() {
-    }
-
-    @Then("The new main leg not allowed within transfer leg message should be displayed")
-    public void theNewMainLegNotAllowedWithinTransferLegMessageShouldBeDisplayed() {
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
     @And("I have a valid ticket on NFC card where all the rides for the given day are availed")
     public void iHaveAValidTicketOnNFCCardWhereAllTheRidesForTheGivenDayAreAvailed() {
-    }
+        TicketRequest ridesAreNotAvailableTicketRequest = new TicketRequestBuilder().ridesAreNotAvailableTicket().build();
+        setTicketRequestUID(ridesAreNotAvailableTicketRequest);
+        String ridesAreNotAvailableTicketRequestBody = ridesAreNotAvailableTicketRequest.createRequestBody();
 
-    @Then("The no rides available for the day message should be displayed")
-    public void theNoRidesAvailableForTheDayMessageShouldBeDisplayed() {
-    }
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
 
-    @And("I have a valid ticket on NFC card with zero rides available")
-    public void iHaveAValidTicketOnNFCCardWithZeroRidesAvailable() {
-    }
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), ridesAreNotAvailableTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
 
-    @Then("The trips depleted message should be displayed")
-    public void theTripsDepletedMessageShouldBeDisplayed() {
-    }
-
-    @And("I have a valid ticket on NFC card with pass limit exceeded")
-    public void iHaveAValidTicketOnNFCCardWithPassLimitExceeded() {
-    }
-
-    @Then("The pass limit message should be displayed")
-    public void thePassLimitMessageShouldBeDisplayed() {
-    }
-
-    @And("I have a valid ticket on NFC card with invalid ride date")
-    public void iHaveAValidTicketOnNFCCardWithInvalidRideDate() {
-    }
-
-    @Then("The ride date is invalid message should be displayed")
-    public void theRideDateIsInvalidMessageShouldBeDisplayed() {
-    }
-
-    @And("I have a valid ticket on NFC card with route not allowed")
-    public void iHaveAValidTicketOnNFCCardWithRouteNotAllowed() {
-    }
-
-    @Then("The route not allowed message should be displayed")
-    public void theRouteNotAllowedMessageShouldBeDisplayed() {
-    }
-
-    @And("I have a valid ticket on NFC card with station not allowed")
-    public void iHaveAValidTicketOnNFCCardWithStationNotAllowed() {
-    }
-
-    @Then("The station is not allowed message should be displayed")
-    public void theStationIsNotAllowedMessageShouldBeDisplayed() {
-    }
-
-    @And("I have a valid ticket on NFC card with no transfer")
-    public void iHaveAValidTicketOnNFCCardWithNoTransfer() {
-    }
-
-    @Then("The transfer not allowed message should be displayed")
-    public void theTransferNotAllowedMessageShouldBeDisplayed() {
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
     @And("I have a valid ticket on NFC card with different business unit")
     public void iHaveAValidTicketOnNFCCardWithDifferentBusinessUnit() {
+        TicketRequest differentBUTicketRequest = new TicketRequestBuilder().differentBUTicket().build();
+        setTicketRequestUID(differentBUTicketRequest);
+        String differentBUTicketRequestBody = differentBUTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), differentBUTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
-    @Then("The incorrect contract message should be displayed")
-    public void theIncorrectContractMessageShouldBeDisplayed() {
+    @And("I have a re-issued NFC card with an expired ticket")
+    public void iHaveAReIssuedNFCCardWithAnExpiredTicket() {
+        TicketRequest reissueNFCCardExpiredTicketRequest = new TicketRequestBuilder().reissueNFCCardExpiredTicket().build();
+        setTicketRequestUID(reissueNFCCardExpiredTicketRequest);
+        String reissueNFCCardExpiredTicketRequestBody = reissueNFCCardExpiredTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), reissueNFCCardExpiredTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
-    @And("I have a valid ticket on NFC card of a different NFC card")
-    public void iHaveAValidTicketOnNFCCardOfADifferentNFCCard() {
+    @And("I have a valid ticket on NFC card with an different NFC card UID")
+    public void iHaveAValidTicketOnNFCCardWithAnDifferentNFCCardUID() {
+        TicketRequest validTicketRequest = new TicketRequestBuilder().validTicket().build();
+        setTicketRequestUID(validTicketRequest);
+        String validRequestBody = validTicketRequest.createRequestBody();
+
+        System.out.println("validRequestBody: " + validRequestBody);
+
+        // New UID
+        String newUid = "A00A0001000000";
+
+        // Replace the UID in the requestBody
+        String updatedRequestBody = validRequestBody.replaceAll("uid=\\w+", "uid=" + newUid);
+
+        System.out.println("updatedRequestBody: " + updatedRequestBody);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), updatedRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 
-    @Then("The error in uid matching message should be displayed")
-    public void theErrorInUidMatchingMessageShouldBeDisplayed() {
+    @And("I have a valid ticket on NFC card with no main and transfer leg")
+    public void iHaveAValidTicketOnNFCCardWithNoMainAndTransferLeg() {
+        TicketRequest noMainTransferLegTicketRequest = new TicketRequestBuilder().noMainTransferLegTicket().build();
+        setTicketRequestUID(noMainTransferLegTicketRequest);
+        String noMainTransferLegTicketRequestBody = noMainTransferLegTicketRequest.createRequestBody();
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Content-Type", URLENCODEDCONTENTTYPE);
+
+        String response = httpClientHelper.sendPOSTWithBearerToken(SALES_API_URL + "svc_tickets_encode", getBearerToken(), noMainTransferLegTicketRequestBody, headers);
+        System.out.println("NFC ticket response: " + response);
+
+        SVCData = parseSVCData(response);
+        SVCData = formatSVCJSONForNotification(SVCData);
+        System.out.println("\nSVC DATA: \n" + SVCData);
     }
 }

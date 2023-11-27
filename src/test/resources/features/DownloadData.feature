@@ -22,16 +22,30 @@ Feature: Download Data
     When I navigate to the settings page
     Then The settings page should be opened
 
+      # navigate to the terminal settings page
+    Given I am on the settings page
+    When I click on the terminal settings page button
+    Then The terminal settings page should be opened
+
+     # turn off the auto disable wifi
+    When I click on the auto disable wifi button
+    Then The auto disable wifi dialogue should be opened
+    And I click on the no button on the auto disable wifi dialogue
+    Then The auto disable wifi should be set to "No"
+
+    Then The terminal settings page should be opened
+    When I navigate to the settings page
+    Then The settings page should be opened
+
     # login to the terminal successfully
     Given I am on the settings page
     When I click on the login page button
     Then The login page should be opened
-    And I turn on the wifi connectivity
     When I click on the User ID button
-    And I give the terminal "pak0039" User ID
+    And I give the terminal "zaf0691" User ID
     Then I click ok to accept the username
     When I click on the password button
-    And I give the terminal "pak0039" password
+    And I give the terminal "zaf0691" password
     Then I click ok to accept the password
     When I click on the terminal server button
     And I select the "Putco Stg" environment

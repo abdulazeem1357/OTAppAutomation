@@ -21,16 +21,30 @@ Feature: Trip
     When I navigate to the settings page
     Then The settings page should be opened
 
+    # navigate to the terminal settings page
+    Given I am on the settings page
+    When I click on the terminal settings page button
+    Then The terminal settings page should be opened
+
+     # turn off the auto disable wifi
+    When I click on the auto disable wifi button
+    Then The auto disable wifi dialogue should be opened
+    And I click on the no button on the auto disable wifi dialogue
+    Then The auto disable wifi should be set to "No"
+
+    Then The terminal settings page should be opened
+    When I navigate to the settings page
+    Then The settings page should be opened
+
     # login to the terminal successfully
     Given I am on the settings page
     When I click on the login page button
     Then The login page should be opened
-    And I turn on the wifi connectivity
     When I click on the User ID button
-    And I give the terminal "pak0039" User ID
+    And I give the terminal "zaf0691" User ID
     Then I click ok to accept the username
     When I click on the password button
-    And I give the terminal "pak0039" password
+    And I give the terminal "zaf0691" password
     Then I click ok to accept the password
     When I click on the terminal server button
     And I select the "Putco Stg" environment
@@ -61,10 +75,12 @@ Feature: Trip
 
     # login to ad hoc shift
     Given I am on the main page
+    And I send the application to the background
+    Then The day prep page should be opened
     When I click on login to shift button
     Then The driver shift login popup should be opened
-    And I enter the "001" driver ID
-    And I enter the "98942" driver pin
+    And I enter the "00002" driver ID
+    And I enter the "28071" driver pin
     And I click on the login to shift button
     Then The adhoc shift pop up should be opened
     When I click on the continue to adhoc shift button
@@ -80,16 +96,16 @@ Feature: Trip
     When I click on the route
     Then The select route direction pop up should be opened
     When I click on the route number to start trip
-    Then The route should be started successfully
+    Then The route "<routeID>" should be started successfully
     When I click on the side menu button
     Then The side menu should be opened
     When I click on the end trip button
     Then The end trip dialogue should be opened
     When I click on the end trip dialogue yes button
     Then The trip should end
-    And The end trip "St Francis Bay to Oyster Bay Turnoff ( Francisroutepath01 )" page should be opened
+    And The end trip "Sosh Live Route 1 ( Sosh Live Route 1 RP )" page should be opened
     When I click on the end trip page cancel button
     Then The shift page should be opened
     Examples:
-      | routeID                              |
-      | St Francis Bay to Oyster Bay Turnoff |
+      | routeID           |
+      | Sosh Live Route 1 |

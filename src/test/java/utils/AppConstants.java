@@ -40,9 +40,17 @@ public class AppConstants {
     public static final String SETTINGS_PAGE_TITLE = "SETTINGS";
     public static final String LOGIN_PAGE_TITLE = "LOG IN";
     public static final String LOGIN_SUCCESS_MESSAGE = "You have been logged in to Open Transit";
+    public static final String TERMINAL_SETTINGS_PAGE_TITLE = "TERMINAL SETTINGS";
+    public static final String EAT_STATUS_NO = "No";
+    public static final String AUTO_DISABLE_WIFI_ALERT_TITLE = "Auto Disable Wifi";
     public final String EXPIRED_NFC_TICKET_MESSAGE = "product has expired";
     public static final String TRIP_PAGE_TITLE = "Select Route";
     public static final String ROUTE_ID = "St Francis Bay to Oyster Bay Turnoff";
     public static final String ROUTE_NAME = "St Francis Bay to Oyster Bay Turnoff";
     public static final String ROUTE_DIRECTION_DIALOGUE_TITLE = "Select Route Direction";
+    private static final String DAY_END_CHECK_PAGE_TITLE = "Day End Checks";
+    private static final String FIRMWARE_ALREADY_UPDATE = "Firmware already up to date";
+    private static final String DATA_DOWNLOAD_SUCCESSFUL = "Data download completed: \n" + "Publication Data downloaded successfully";
+    private static final String RECONCILIATION_SUCCESSFUL = "Reconciliation is successfully completed";
+    public static final String ENABLE_TAG_AUTHENTICATE_ALERT_TITLE = "Enable Tag Authenticate";
 }

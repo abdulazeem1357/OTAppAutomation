@@ -3,31 +3,37 @@ package pageObjects;
 import fundamental.Waiting;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
+import io.cucumber.java.en_scouse.An;
 import org.openqa.selenium.WebElement;
 
-public class HardwareSettingsPage extends BasePage {
-    public HardwareSettingsPage(AndroidDriver androidDriver) {
+public class TerminalSettingsPage extends BasePage {
+    public TerminalSettingsPage(AndroidDriver androidDriver) {
         super(androidDriver);
         waiting = new Waiting(androidDriver);
     }
-
     private final Waiting waiting;
 
     @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.TextView")
-    private WebElement hardwareSettingsPageTitle;
+    private WebElement terminalSettingsPageTitle;
 
     @AndroidFindBy(id = "android:id/alertTitle")
     private WebElement alertTitle;
 
     @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.LinearLayout[1]/android.widget.RelativeLayout/android.widget.TextView[2]")
-    private WebElement currentStatusGPS;
+    private WebElement currentEnableTagAuthenticateStatus;
 
-    public String getHardwareSettingsPageTitle() {
-        return waiting.getText(hardwareSettingsPageTitle);
+    @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.LinearLayout[2]/android.widget.RelativeLayout/android.widget.TextView[2]")
+    private WebElement currentAutoDisableWifiStatus;
+
+    public String getTerminalSettingsPageTitle() {
+        return waiting.getText(terminalSettingsPageTitle);
+    }
+    public void clickEnableTagAuthenticateButton() {
+        waiting.waitForTextToBePresentInList(getTerminalSettingItems(), ConstantsPage.ENABLE_TAG_AUTHENTICATE).click();
     }
 
-    public void clickUseGPSForLocationButton() {
-        waiting.waitForTextToBePresentInList(getHardwareSettingItems(), ConstantsPage.USE_GPS_FOR_LOCATION).click();
+    public void clickAutoDisableWifiButton() {
+        waiting.waitForTextToBePresentInList(getTerminalSettingItems(), ConstantsPage.AUTO_DISABLE_WIFI).click();
     }
 
     public String getAlertTitle() {
@@ -38,15 +44,15 @@ public class HardwareSettingsPage extends BasePage {
         waiting.waitForTextToBePresentInList(getAlertDialogueButtons(), ConstantsPage.ALERT_DIALOGUE_NO_BUTTON).click();
     }
 
-    public void clickDialogueIfAvailableButton() {
-        waiting.waitForTextToBePresentInList(getAlertDialogueButtons(), ConstantsPage.ALERT_DIALOGUE_IF_AVAILABLE_BUTTON).click();
+    public String getEnableTagAuthenticateCurrentStatus() {
+        return waiting.waitForElementVisibility(currentEnableTagAuthenticateStatus).getText();
     }
 
-    public String getGPSCurrentStatus() {
-        return waiting.waitForElementVisibility(currentStatusGPS).getText();
+    public String getAutoDisableWifiCurrentStatus() {
+        return waiting.waitForElementVisibility(currentAutoDisableWifiStatus).getText();
     }
 
-    public String getHardwareSettingItems() {
+    public String getTerminalSettingItems() {
         return "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.LinearLayout[%d]/android.widget.RelativeLayout/android.widget.TextView[1]";
     }
 

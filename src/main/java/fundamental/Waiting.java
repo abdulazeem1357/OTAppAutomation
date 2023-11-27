@@ -27,7 +27,7 @@ public class Waiting {
 
     public Waiting(AndroidDriver androidDriver) {
         this.driver = androidDriver;
-        this.timeout = 20;
+        this.timeout = 60;
         wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
     }
 
@@ -51,7 +51,7 @@ public class Waiting {
     }
 
     public String pollForVisibilityOfElement(WebElement element, int pollingTimeInNanos, String attributeToLookFor) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(180));
         return wait.pollingEvery(Duration.ofNanos(pollingTimeInNanos))
                 .ignoring(StaleElementReferenceException.class)
                 .until(ExpectedConditions.refreshed(
@@ -241,10 +241,9 @@ public class Waiting {
     }
 
     // getText: gets the text of the element
-    public WebElement getText(WebElement element) {
+    public String getText(WebElement element) {
         waitForElementVisibility(element);
-        element.getText();
-        return element;
+        return element.getText();
     }
 
     // allows to use further already provided expected conditions

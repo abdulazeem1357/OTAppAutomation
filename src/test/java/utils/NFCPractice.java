@@ -49,7 +49,7 @@ public class NFCPractice {
     }
 
     public static void makeTicketAPICall() {
-        TicketRequest expiredTicketRequest = TicketRequestBuilder.expiredTicket().build();
+        TicketRequest expiredTicketRequest = new TicketRequestBuilder().expiredTicket().build();
         String expiredRequestBody = expiredTicketRequest.createRequestBody();
 
         createHttpService();

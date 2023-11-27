@@ -1,7 +1,8 @@
-@NFCTicket
-Feature: Perform NFC transactions
+Feature: Complete E2E
 
-  Background:
+  @Complete @NFCTicket
+  Scenario: Complete run of the OT App
+
       # set the gps to if available
     Given I launch the application
     Then The main page should be opened
@@ -43,7 +44,7 @@ Feature: Perform NFC transactions
     When I navigate to the settings page
     Then The settings page should be opened
 
-    # login to the terminal successfully
+      # login to the terminal successfully
     Given I am on the settings page
     When I click on the login page button
     Then The login page should be opened
@@ -60,13 +61,13 @@ Feature: Perform NFC transactions
     When I click ok to close the login to terminal dialogue
     Then The login page should be opened
 
-    # navigate to the mainPage
+      # navigate to the mainPage
     When I navigate to the settings page
     Then The settings page should be opened
     When I navigate to the main page
     Then The main page should be opened
 
-    # downloading the data successfully
+      # successfully download the data with a healthy internet connection
     Given I am already logged in
     And I am on the main page
     When I click on the side menu button
@@ -80,10 +81,11 @@ Feature: Perform NFC transactions
     Then The download data page should be opened
     When I navigate to the main page from download page
 
-    # login to ad hoc shift
+      # login to the ad hoc shift successfully
     Given I am on the main page
     And I send the application to the background
     Then The day prep page should be opened
+    And The day prep checks should be completed successfully
     When I click on login to shift button
     Then The driver shift login popup should be opened
     And I enter the "00002" driver ID
@@ -94,7 +96,7 @@ Feature: Perform NFC transactions
     Then I should be logged in to the shift successfully
     And The shift page should be opened
 
-    # start an ad hoc shift trip successfully
+      # start an ad hoc shift trip successfully
     Given I am on the shift page
     When I click on the start trip button
     Then The trips page should be opened
@@ -104,97 +106,92 @@ Feature: Perform NFC transactions
     When I click on the route number to start trip
     Then The route "Sosh Live Route 1" should be started successfully
 
-    # perform a successful product has expired transaction using NFC card with an expired ticket
-  Scenario: Perform successful expired NFC transaction
+      # perform cash transaction successfully
     Given I am on a route
-    And I have an expired ticket on NFC card
-    When I tap NFC card on the left NFC reader
-    Then The "product has expired" message should be displayed
+    When I click to open select fare menu
+    Then The select fare menu should be opened
+    When I select a fare of "30.0" rands
+    Then The select destinations menu should be opened
+    When I select a "Sosh Transfer Station 1" destination
+    And I select ticket for "2" passenger
+    When I click to purchase ticket for passengers
+    Then The ticket should be purchased successfully
+    And The passenger in count should increase by "2"
+    And Updated cash tickets should be displayed by increase of "2"
 
       # perform a successful transaction using NFC card with an valid ticket
-  Scenario: Perform successful valid NFC transaction
-    Given I am on a route
     And I have a valid ticket on NFC card
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
 
-    # perform a successful transfer leg within time transaction using NFC card with an valid ticket
-  Scenario: Perform a successful transfer leg within time transaction using NFC card with an valid ticket
-    Given I am on a route
+    # perform a successful transaction with multiple merchants tickets on the NFC card
+    And I have multiple valid merchant tickets on the NFC card
+    When I tap NFC card on the left NFC reader
+    Then The "Valid ticket" message should be displayed
+
+      # perform a successful transaction using a re-issued NFC card valid ticket
+    And I have a re-issued NFC card
+    When I tap NFC card on the left NFC reader
+    Then The "Valid ticket" message should be displayed
+
+      # perform a successful new main leg not allowed within transfer leg transaction using NFC card with a valid ticket
+    And I have a valid ticket on NFC card with no main and transfer leg
+    When I tap NFC card on the left NFC reader
+    Then The "New Main Leg Not Allowed Within Transfer Time" message should be displayed
+
+      # perform a successful product has expired transaction using NFC card with an expired ticket
+    And I have an expired ticket on NFC card
+    When I tap NFC card on the left NFC reader
+    Then The "product has expired" message should be displayed
+
+      # perform a successful error in uid matching transaction using NFC card with a valid ticket
+    And I have a valid ticket on NFC card with an different NFC card UID
+    When I tap NFC card on the left NFC reader
+    Then The "Sorry, Invalid Card" message should be displayed
+
+      # perform a successful incorrect contract/station not found transaction using NFC card with a valid ticket
+    And I have a valid ticket on NFC card with different business unit
+    When I tap NFC card on the left NFC reader
+    Then The "Station Not Found" message should be displayed
+
+      # perform a successful transaction using a disabled NFC card
+    And I have a disabled NFC card
+    When I tap NFC card on the left NFC reader
+    Then The "card is disabled" message should be displayed
+
+    # perform a successful no rides available for the day transaction using NFC card with a valid ticket
+    And I have a valid ticket on NFC card where all the rides for the given day are availed
+    When I tap NFC card on the left NFC reader
+    Then The "Rides Are Not Available" message should be displayed
+
+      # perform a successful transaction using a blocked NFC card
+    And I have a blocked NFC card
+    When I tap NFC card on the left NFC reader
+    Then The "card is blocked" message should be displayed
+
+      # perform a successful transaction using a re-issued NFC card with expired ticket
+    And I have a re-issued NFC card with an expired ticket
+    When I tap NFC card on the left NFC reader
+    Then The "product has expired" message should be displayed
+
+      # perform a successful transfer leg within time transaction using NFC card with an valid ticket
     And I have a valid ticket on NFC card with a transfer leg
     And I navigate to the "Sosh Transfer Station 1" station
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
 
-    # perform a successful transaction with multiple merchants tickets on the NFC card
-  Scenario: Perform a successful transaction with multiple merchants tickets on the NFC card
-    Given I am on a route
-    And I have multiple valid merchant tickets on the NFC card
-    When I tap NFC card on the left NFC reader
-    Then The "Valid ticket" message should be displayed
-
-    # perform a successful transaction using a blocked NFC card
-  Scenario: Perform successful blocked NFC card transaction
-    Given I am on a route
-    And I have a blocked NFC card
-    When I tap NFC card on the left NFC reader
-    Then The "card is blocked" message should be displayed
-
-    # perform a successful transaction using a re-issued NFC card valid ticket
-  Scenario: Perform successful valid NFC transaction using re-issued NFC card
-    Given I am on a route
-    And I have a re-issued NFC card
-    When I tap NFC card on the left NFC reader
-    Then The "Valid ticket" message should be displayed
-
-    # perform a successful transaction using a re-issued NFC card with expired ticket
-  Scenario: Perform a successful expired ticket NFC transaction using re-issued NFC card
-    Given I am on a route
-    And I have a re-issued NFC card with an expired ticket
-    When I tap NFC card on the left NFC reader
-    Then The "product has expired" message should be displayed
-
-    # perform a successful transaction using a disabled NFC card
-  Scenario: Perform a successful disabled NFC card transaction
-    Given I am on a route
-    And I have a disabled NFC card
-    When I tap NFC card on the left NFC reader
-    Then The "card is disabled" message should be displayed
-
-    # perform a successful new main leg not allowed within transfer leg transaction using NFC card with a valid ticket
-  Scenario: Perform a successful new main leg not allowed transaction using NFC card with a valid ticket
-    Given I am on a route
+      # perform a successful transfer leg not allowed within within transfer time using NFC card with a valid ticket
     And I have a valid ticket on NFC card with no main and transfer leg
-    When I tap NFC card on the left NFC reader
-    Then The "New Main Leg Not Allowed Within Transfer Time" message should be displayed
-
-    # perform a successful transfer leg not allowed within within transfer time using NFC card with a valid ticket
-  Scenario: Perform a successful transfer leg not allowed within transfer time transaction using NFC card with a valid ticket
-    Given I am on a route
-    And I have a valid ticket on NFC card with no main and transfer leg
-    And I navigate to the "Sosh Transfer Station 1" station
     When I tap NFC card on the left NFC reader
     Then The "New Transfer Leg Not Allowed Within Transfer Time" message should be displayed
 
-    # perform a successful no rides available for the day transaction using NFC card with a valid ticket
-  Scenario: Perform a successful no rides available for the day transaction using NFC card with a valid ticket
-    Given I am on a route
-    And I have a valid ticket on NFC card where all the rides for the given day are availed
-    When I tap NFC card on the left NFC reader
-    Then The "Rides Are Not Available" message should be displayed
-
-    # perform a successful Station not allowed transaction using NFC card with a valid ticket
-  Scenario: Perform a successful Station not allowed transaction using NFC card with a valid ticket
-    Given I am on a route
+     # perform a successful Station not allowed transaction using NFC card with a valid ticket
     And I have a valid ticket on NFC card
     Then I navigate to the "Sosh Transfer Station 5" station
     When I tap NFC card on the left NFC reader
     Then The "Station is not allowed" message should be displayed
 
     # perform a successful transfer not allowed transaction using NFC card with a valid ticket
-  Scenario: Perform a successful transfer not allowed transaction using NFC card with a valid ticket
-    Given I am on a route
-    
     # end trip
     When I click on the side menu button
     Then The side menu should be opened
@@ -220,17 +217,3 @@ Feature: Perform NFC transactions
     And I have a valid ticket on NFC card
     When I tap NFC card on the left NFC reader
     Then The "Transfer Ride Is Not Allowed" message should be displayed
-
-    # perform a successful error in uid matching transaction using NFC card with a valid ticket
-  Scenario: Perform a successful error in uid matching transaction using NFC card with a valid ticket
-    Given I am on a route
-    And I have a valid ticket on NFC card with an different NFC card UID
-    When I tap NFC card on the left NFC reader
-    Then The "Sorry, Invalid Card" message should be displayed
-
-    # perform a successful incorrect contract/station not found transaction using NFC card with a valid ticket
-  Scenario: Perform a successful incorrect contract transaction using NFC card with a valid ticket
-    Given I am on a route
-    And I have a valid ticket on NFC card with different business unit
-    When I tap NFC card on the left NFC reader
-    Then The "Station Not Found" message should be displayed

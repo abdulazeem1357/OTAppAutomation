@@ -122,8 +122,8 @@ public class LoginToTerminal extends TestBase {
         softAssert.assertEquals(settingsPage.getSettingsPageTitle(), AppConstants.SETTINGS_PAGE_TITLE);
     }
 
-    @Then("The login to the terminal should fail")
-    public void theLoginToTheTerminalShouldFail() {
-
+    @Then("I should see the message {string} after attempting to login to the terminal")
+    public void iShouldSeeTheMessageAfterAttemptingToLoginToTheTerminal(String terminalLoginMessage) {
+        softAssert.assertEquals(loginToTerminalPage.getDialogueMessage(), terminalLoginMessage);
     }
 }

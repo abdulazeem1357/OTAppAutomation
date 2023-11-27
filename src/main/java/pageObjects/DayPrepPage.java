@@ -16,11 +16,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class DayPrepPage extends BasePage {
-    private static final String DAY_END_CHECK_PAGE_TITLE = "Day End Checks";
-    private static final String DAY_START_CHECK_PAGE_TITLE = "Day Start Checks";
-    private static final String FIRMWARE_ALREADY_UPDATE = "Firmware already up to date";
-    private static final String DATA_DOWNLOAD_SUCCESSFUL = "Data download completed: \n" + "Publication Data downloaded successfully";
-    private static final String RECONCILIATION_SUCCESSFUL = "Reconciliation is successfully completed";
+
     private final Waiting waiting;
 
     private ElementWrapper elementWrapper;
@@ -168,11 +164,11 @@ public class DayPrepPage extends BasePage {
     private static final By hardwareValidationCheckPass = AppiumBy.accessibilityId("green_Hardware validation");
 
     public String getDayStartPageTitle() {
-        return waiting.waitForTextToBePresentInElement(dayPrepPageTitle, DAY_START_CHECK_PAGE_TITLE).getText();
+        return waiting.waitForTextToBePresentInElement(dayPrepPageTitle, ConstantsPage.DAY_START_CHECK_PAGE_TITLE).getText();
     }
 
     public String getDayEndPageTitle() {
-        return waiting.waitForTextToBePresentInElement(dayPrepPageTitle, DAY_END_CHECK_PAGE_TITLE).getText();
+        return waiting.waitForTextToBePresentInElement(dayPrepPageTitle, ConstantsPage.DAY_END_CHECK_PAGE_TITLE).getText();
     }
 
     public String getConnectivityCheckStartMessage() {
@@ -188,7 +184,7 @@ public class DayPrepPage extends BasePage {
     }
 
     public String getNoConnectivityDialogueMessage() {
-        WebElement noConnectivityMessage =  waiting.waitForTextToBePresentInElement(dialogueMessage, "Sorry cannot find data connection. Please move the bus to \"Wifi zone\".");
+        WebElement noConnectivityMessage = waiting.waitForTextToBePresentInElement(dialogueMessage, "Sorry cannot find data connection. Please move the bus to \"Wifi zone\".");
         return noConnectivityMessage.getText();
     }
 

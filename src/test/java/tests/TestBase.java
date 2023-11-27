@@ -29,6 +29,7 @@ import java.time.LocalTime;
 public class TestBase extends AbstractTestNGCucumberTests {
     protected static DownloadDataPage downloadDataPage;
     protected static HardwareSettingsPage hardwareSettingsPage;
+    protected static TerminalSettingsPage terminalSettingsPage;
     protected static LoginToTerminalPage loginToTerminalPage;
 
     protected static MainPage mainPage;
@@ -131,6 +132,7 @@ public class TestBase extends AbstractTestNGCucumberTests {
         } else {
             downloadDataPage = new DownloadDataPage(driver);
             hardwareSettingsPage = new HardwareSettingsPage(driver);
+            terminalSettingsPage = new TerminalSettingsPage(driver);
             loginToTerminalPage = new LoginToTerminalPage(driver);
             mainPage = new MainPage(driver);
             routePage = new RoutePage(driver);

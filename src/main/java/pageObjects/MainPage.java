@@ -10,13 +10,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 
 public class MainPage extends BasePage {
-    private static final String LOGIN_TERMINAL_BODY_TEXT = "Please login to OpenTransit..!!";
-    private static final String DOWNLOAD_DATA_BODY_TEXT = "Please download data..!!";
-    private static final String LOGIN_SHIFT_BODY_TEXT = "Please login to start shift";
-    private static final String GPS_NOT_WORKING_BODY_TEXT = "GPS is not working properly";
-    private static final String ADHOC_SHIFT_ALERT_TITLE = "Adhoc Shift";
-    private static final String OPEN_TRANSIT_TITLE = "OPENTRANSIT";
-    private static final String TEXT_ATTRIBUTE = "text";
     private final Waiting waiting;
     private final AndroidDriver driver;
 
@@ -56,25 +49,31 @@ public class MainPage extends BasePage {
     @AndroidFindBy(id = "android:id/button1")
     private WebElement continueShiftButton;
 
+    @AndroidFindBy(id = "android:id/button2")
+    private WebElement cancelShiftButton;
+
+    @AndroidFindBy(xpath = "/hierarchy/android.widget.Toast")
+    private WebElement toastMessage;
+
     public String getMainPageTitleText() {
-        waiting.waitUntilAttributeToBe(mainPageTitle, TEXT_ATTRIBUTE, OPEN_TRANSIT_TITLE);
-        return waiting.getText(mainPageTitle).getText();
+        waiting.waitUntilAttributeToBe(mainPageTitle, ConstantsPage.TEXT_ATTRIBUTE, ConstantsPage.OPEN_TRANSIT_TITLE);
+        return waiting.getText(mainPageTitle);
     }
 
     public String getLoginTerminalText() {
-        return waiting.waitForTextToBePresentInElement(bodyText, LOGIN_TERMINAL_BODY_TEXT).getText();
+        return waiting.waitForTextToBePresentInElement(bodyText, ConstantsPage.LOGIN_TERMINAL_BODY_TEXT).getText();
     }
 
     public String getDownloadDataText() {
-        return waiting.waitForTextToBePresentInElement(bodyText, DOWNLOAD_DATA_BODY_TEXT).getText();
+        return waiting.waitForTextToBePresentInElement(bodyText, ConstantsPage.DOWNLOAD_DATA_BODY_TEXT).getText();
     }
 
     public String getLoginShiftText() {
-        return waiting.waitUntilAttributeToBe(bodyText, TEXT_ATTRIBUTE, LOGIN_SHIFT_BODY_TEXT).getText();
+        return waiting.waitUntilAttributeToBe(bodyText, ConstantsPage.TEXT_ATTRIBUTE, ConstantsPage.LOGIN_SHIFT_BODY_TEXT).getText();
     }
 
     public String getGPSNotWorkingText() {
-        return waiting.waitForTextToBePresentInElement(bodyText, GPS_NOT_WORKING_BODY_TEXT).getText();
+        return waiting.waitForTextToBePresentInElement(bodyText, ConstantsPage.GPS_NOT_WORKING_BODY_TEXT).getText();
     }
 
     public void clickLoginShiftButton() {
@@ -107,10 +106,18 @@ public class MainPage extends BasePage {
     }
 
     public String getAdHocAlertTitle() {
-        return waiting.waitForTextToBePresentInElement(alertTitle, ADHOC_SHIFT_ALERT_TITLE).getText();
+        return waiting.waitForTextToBePresentInElement(alertTitle, ConstantsPage.ADHOC_SHIFT_ALERT_TITLE).getText();
     }
 
     public void clickContinueShiftButton() {
         waiting.click(continueShiftButton);
+    }
+
+    public void clickCancelShiftButton() {
+        waiting.click(cancelShiftButton);
+    }
+
+    public String getToastMessage() {
+        return toastMessage.getText();
     }
 }

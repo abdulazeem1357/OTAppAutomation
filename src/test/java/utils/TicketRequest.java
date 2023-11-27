@@ -7,7 +7,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 public class TicketRequest {
-    private final String uid;
+    private String uid;
     private final JSONArray ticketData;
 
     // Constructor should be package-private to prevent classes in other packages from directly instantiating this class
@@ -17,6 +17,11 @@ public class TicketRequest {
     }
 
     public String getUid() {
+        return uid;
+    }
+
+    public String setUID(String newUID) {
+        this.uid = newUID;
         return uid;
     }
 

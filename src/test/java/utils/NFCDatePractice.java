@@ -7,7 +7,14 @@ import java.util.Date;
 public class NFCDatePractice {
 
     public static void main(String[] args) {
-        myMethod();
+        Date currentDate = DateUtil.getCurrentDate();
+        System.out.println("Current Date: " + DateUtil.formatDate(currentDate));
+
+        Date tenDaysFromNow = DateUtil.modifyDaysToDate(currentDate, 10);
+        System.out.println("Ten Days from Now: " + DateUtil.formatDate(tenDaysFromNow));
+
+        Date lastTenDaysFromDate = DateUtil.modifyDaysToDate(currentDate, -10);
+        System.out.println("Last Ten Days from Now: " + DateUtil.formatDate(lastTenDaysFromDate));
     }
 
     private static void myMethod() {

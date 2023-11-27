@@ -6,11 +6,6 @@ import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
 
 public class LoginToTerminalPage extends BasePage {
-    private static final String USER_ID_BUTTON = "User ID";
-    private static final String PASSWORD_BUTTON = "Password";
-    private static final String TERMINAL_SERVER = "Terminal Server";
-    private static final String LOGIN_BUTTON = "Login";
-
     private final Waiting waiting;
 
     public LoginToTerminalPage(AndroidDriver androidDriver) {
@@ -35,7 +30,7 @@ public class LoginToTerminalPage extends BasePage {
     }
 
     public void clickUserIDButton() {
-        waiting.waitForTextToBePresentInList(getLoginPageItems(), USER_ID_BUTTON).click();
+        waiting.waitForTextToBePresentInList(getLoginPageItems(), ConstantsPage.USER_ID_BUTTON).click();
     }
 
     public void enterUserIDField(String userID) {
@@ -48,7 +43,7 @@ public class LoginToTerminalPage extends BasePage {
     }
 
     public void clickPasswordButton() {
-        waiting.waitForTextToBePresentInList(getLoginPageItems(), PASSWORD_BUTTON).click();
+        waiting.waitForTextToBePresentInList(getLoginPageItems(), ConstantsPage.PASSWORD_BUTTON).click();
     }
 
     public void enterPasswordField(String password) {
@@ -57,7 +52,7 @@ public class LoginToTerminalPage extends BasePage {
     }
 
     public void clickTerminalServer() {
-        waiting.waitForTextToBePresentInList(getLoginPageItems(), TERMINAL_SERVER).click();
+        waiting.waitForTextToBePresentInList(getLoginPageItems(), ConstantsPage.TERMINAL_SERVER).click();
     }
 
     public void selectTerminalEnvironment(String terminalEnvironment) {
@@ -65,7 +60,7 @@ public class LoginToTerminalPage extends BasePage {
     }
 
     public void clickLoginButton() {
-        waiting.waitForTextToBePresentInList(getLoginPageItems(), LOGIN_BUTTON).click();
+        waiting.waitForTextToBePresentInList(getLoginPageItems(), ConstantsPage.LOGIN_BUTTON).click();
     }
 
     public String getDialogueMessage() {

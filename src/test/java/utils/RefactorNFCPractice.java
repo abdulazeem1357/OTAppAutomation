@@ -5,10 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class RefactorNFCPractice {
 
@@ -16,11 +13,13 @@ public class RefactorNFCPractice {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter the JSON input:");
         String inputJson = scanner.nextLine();
-
+//
         String parsedSVCData = parseSVCData(inputJson);
         String outputJson = formatInputOutput(parsedSVCData);
         System.out.println("Output:");
         System.out.println(outputJson);
+
+//        System.out.println(generateRandomUID());
     }
 
     private static String parseSVCData(String responseJson) {
@@ -50,5 +49,18 @@ public class RefactorNFCPractice {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    private static final Random random = new Random();
+
+    public static String generateRandomUID() {
+        StringBuilder uid = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            uid.append(Integer.toHexString(random.nextInt(16)).toUpperCase());
+        }
+        uid.append("000000");
+        return uid.toString();
     }
 }

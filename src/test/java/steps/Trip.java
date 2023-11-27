@@ -43,9 +43,9 @@ public class Trip extends TestBase {
         tripPage.startRouteButton();
     }
 
-    @Then("The route should be started successfully")
-    public void theRouteShouldBeStartedSuccessfully() {
-        softAssert.assertTrue(routePage.getRouteName().contains(AppConstants.ROUTE_ID));
+    @Then("The route {string} should be started successfully")
+    public void theRouteShouldBeStartedSuccessfully(String routeID) {
+        softAssert.assertTrue(routePage.getRouteName().contains(routeID));
     }
 
     @When("I click on the end trip button")
@@ -69,6 +69,8 @@ public class Trip extends TestBase {
 
     @And("The end trip {string} page should be opened")
     public void theEndTripPageShouldBeOpened(String routeID) {
+        System.out.println("Route ID: " + routeID);
+        System.out.println("Get End Trip Route ID: " + tripPage.getEndTripRoute());
         softAssert.assertTrue(tripPage.getEndTripRoute().contains(routeID));
     }
 

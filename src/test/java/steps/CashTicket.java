@@ -7,6 +7,8 @@ import io.cucumber.java.en.When;
 import tests.TestBase;
 import utils.AppConstants;
 
+import java.time.Duration;
+
 public class CashTicket extends TestBase {
     @Given("I am on a route")
     public void iAmOnARoute() {
@@ -72,6 +74,11 @@ public class CashTicket extends TestBase {
 
     @When("I navigate to the {string} station")
     public void iNavigateToTheStation(String destinationStation) {
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         routePage.clickStation(destinationStation);
     }
 

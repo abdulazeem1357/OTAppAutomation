@@ -12,6 +12,8 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 //The code uses Apache Commons Configuration library to read values from a config.properties file.
 public class ConfigHelper {
 
+    static InfrastructureEnv infrastructureEnv = new InfrastructureEnv();
+
     //    sets up the capabilities for an Android emulator with no reset,
     //    meaning the app state will be preserved between test runs.
     public static UiAutomator2Options configWithNoResetTrue() {
@@ -27,12 +29,12 @@ public class ConfigHelper {
             capabilities = new UiAutomator2Options()
                     .setApp(config.getString("APILevel25"))
                     .setDeviceName(config.getString("androidEmulator"))
-                    .setApp(config.getString("targetAppOT"))
+                    .setApp(infrastructureEnv.getAppURL())
 //                .setApp(System.getProperty("user.dir") + "/" + configReader.getPropValue("targetAppOT"))
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetTrue")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(config.getString("androidEmulator5554"));
+                    .setUdid(infrastructureEnv.getDevice());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
@@ -56,12 +58,12 @@ public class ConfigHelper {
             capabilities = new UiAutomator2Options()
                     .setApp(config.getString("APILevel25"))
                     .setDeviceName(config.getString("androidEmulator"))
-                    .setApp(config.getString("targetAppOT"))
+                    .setApp(infrastructureEnv.getAppURL())
 //                .setApp(System.getProperty("user.dir") + "/" + configReader.getPropValue("targetAppOT"))
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetFalse")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(config.getString("androidEmulator5554"));
+                    .setUdid(infrastructureEnv.getDevice());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
@@ -83,12 +85,12 @@ public class ConfigHelper {
             Configuration config = builder.getConfiguration();
 
             capabilities = new UiAutomator2Options()
-                    .setApp(config.getString("targetAppOT"))
-//                .setApp(System.getProperty("user.dir") + "/" + configReader.getPropValue("targetAppOT"))
+                    .setApp(infrastructureEnv.getAppURL())
+//                .setApp(System.getProperty("user.dir") + "/" + config.getString("targetAppOT"))
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetTrue")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(config.getString("motorollaDeviceID"));
+                    .setUdid(infrastructureEnv.getDevice());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
@@ -110,12 +112,12 @@ public class ConfigHelper {
             Configuration config = builder.getConfiguration();
 
             capabilities = new UiAutomator2Options()
-                    .setApp(config.getString("targetAppOT"))
+                    .setApp(infrastructureEnv.getAppURL())
 //                    .setApp(System.getProperty("user.dir") + "/" + config.getString("targetAppOT"))
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetFalse")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(config.getString("motorollaDeviceID"));
+                    .setUdid(infrastructureEnv.getDevice());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);

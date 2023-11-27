@@ -10,6 +10,9 @@ import tests.TestBase;
         , tags = "not @ignore"
         , plugin = {
         "pretty",
+        "html:target/cucumber-reports",
+        "json:target/cucumber.json",
+        "junit:target/cucumber.xml",
         "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm",
         "rerun:target/failedrun.txt"
 })

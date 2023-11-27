@@ -8,8 +8,6 @@ import org.openqa.selenium.WebElement;
 
 public class RoutePage extends BasePage {
     private final Waiting waiting;
-    private static final String EXPIRED_NFC_TICKET_MESSAGE = "product has expired";
-    private static final String ROUTE_PAGE_BODY_TEXT = "Ready For Tap";
 
     public RoutePage(AndroidDriver androidDriver) {
         super(androidDriver);
@@ -63,11 +61,11 @@ public class RoutePage extends BasePage {
     }
 
     public String getReadyForTapPageBodyText() {
-        return waiting.waitForTextToBePresentInElement(bodyText, ROUTE_PAGE_BODY_TEXT).getText();
+        return waiting.waitForTextToBePresentInElement(bodyText, ConstantsPage.ROUTE_PAGE_BODY_TEXT).getText();
     }
 
-    public String getExpiredNFCBodyText() {
-        return waiting.waitForTextToBePresentInElement(bodyText, EXPIRED_NFC_TICKET_MESSAGE).getText();
+    public String getNFCBodyText() {
+        return waiting.waitForElementVisibility(bodyText).getText();
     }
 
     public void clickCashTicketMenuButton() {
