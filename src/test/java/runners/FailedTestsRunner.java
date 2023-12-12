@@ -5,8 +5,9 @@ import tests.TestBase;
 
 // Class for rerunning the failed scenarios with CucumberOptions annotations
 // features parameter is set to "@target/failedrun.txt" to run only the failed tests from the previous run
-@CucumberOptions(features = "@target/failedrun.txt"
+@CucumberOptions(features = {"@target/failedrun.txt"}
         , glue = {"steps"}
+        , tags = "not @ignore"
         , plugin = {
         "pretty",
         "html:target/cucumber-reports",

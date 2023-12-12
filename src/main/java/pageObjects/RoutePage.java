@@ -56,16 +56,19 @@ public class RoutePage extends BasePage {
     @AndroidFindBy(id = "com.bps.bpass.mainpackage:id/txtViewTapInCardCounter")
     private WebElement NFCTicketCounter;
 
+    @AndroidFindBy(id = "com.bps.bpass.mainpackage:id/toastMsg")
+    private WebElement toastMessage;
+
+    public String getToastMessage() {
+        return waiting.getText(toastMessage);
+    }
+
     public String getRouteName() {
         return waiting.waitForElementVisibility(routeName).getText();
     }
 
     public String getReadyForTapPageBodyText() {
         return waiting.waitForTextToBePresentInElement(bodyText, ConstantsPage.ROUTE_PAGE_BODY_TEXT).getText();
-    }
-
-    public String getNFCBodyText() {
-        return waiting.waitForElementVisibility(bodyText).getText();
     }
 
     public void clickCashTicketMenuButton() {

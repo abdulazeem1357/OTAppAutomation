@@ -118,6 +118,6 @@ public class MainPage extends BasePage {
     }
 
     public String getToastMessage() {
-        return toastMessage.getText();
+        return waiting.getText(toastMessage);
     }
 }

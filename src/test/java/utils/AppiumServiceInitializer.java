@@ -14,13 +14,19 @@ public class AppiumServiceInitializer {
 
     //    sets up the Appium service with IP address and port number
     public void startAppiumServer() {
-        localService = new AppiumServiceBuilder()
-                .withIPAddress("0.0.0.0")
-                .usingPort(4723)
-                .withArgument(GeneralServerFlag.BASEPATH, "/wd/hub")
-                .withAppiumJS(new File("/Users/IT/AppData/Roaming/npm/node_modules/appium/build/lib/main.js"))
-                .build();
-        localService.start();
+        try {
+            localService = new AppiumServiceBuilder()
+                    .withIPAddress("0.0.0.0")
+                    .usingPort(4723)
+                    .withArgument(GeneralServerFlag.BASEPATH, "/wd/hub")
+//                .withAppiumJS(new File("/Users/IT/AppData/Roaming/npm/node_modules/appium/build/lib/main.js"))
+                    .withAppiumJS(new File("/opt/node-v18.19.0-linux-x64/lib/node_modules/appium/build/lib/main.js"))
+                    .build();
+            localService.start();
+            System.out.println("Appium Server Started!");
+        } catch (Exception e) {
+            System.out.println("Could not start Appium Server with Error: " + e.getMessage());
+        }
     }
 
     //    stops the Appium service if it is running.
@@ -28,9 +34,9 @@ public class AppiumServiceInitializer {
     public void stopAppiumServer() {
         if (localService.isRunning()) {
             localService.stop();
-            System.out.println("The appium Service is stopped!");
+            System.out.println("Appium Server is stopped!");
         } else {
-            System.out.println("The appium Service is not running!");
+            System.out.println("Appium Server is not running!");
         }
     }
 

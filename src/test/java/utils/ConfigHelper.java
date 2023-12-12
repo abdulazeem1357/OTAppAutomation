@@ -8,6 +8,8 @@ import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
+import java.time.Duration;
+
 //This code sets up Appium capabilities for an Android emulator or physical device.
 //The code uses Apache Commons Configuration library to read values from a config.properties file.
 public class ConfigHelper {
@@ -29,6 +31,10 @@ public class ConfigHelper {
             capabilities = new UiAutomator2Options()
                     .setApp(config.getString("APILevel25"))
                     .setDeviceName(config.getString("androidEmulator"))
+                    .setIsHeadless(true)
+//                    .skipServerInstallation()
+//                    .noSign()
+                    .setUiautomator2ServerInstallTimeout(Duration.ofSeconds(30))
                     .setApp(infrastructureEnv.getAppURL())
 //                .setApp(System.getProperty("user.dir") + "/" + configReader.getPropValue("targetAppOT"))
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
@@ -58,6 +64,9 @@ public class ConfigHelper {
             capabilities = new UiAutomator2Options()
                     .setApp(config.getString("APILevel25"))
                     .setDeviceName(config.getString("androidEmulator"))
+                    .setIsHeadless(true)
+//                    .skipServerInstallation()
+                    .setUiautomator2ServerInstallTimeout(Duration.ofSeconds(60))
                     .setApp(infrastructureEnv.getAppURL())
 //                .setApp(System.getProperty("user.dir") + "/" + configReader.getPropValue("targetAppOT"))
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))

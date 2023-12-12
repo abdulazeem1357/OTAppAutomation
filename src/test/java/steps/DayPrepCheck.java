@@ -7,8 +7,6 @@ import io.cucumber.java.en.When;
 import tests.TestBase;
 import utils.AppConstants;
 
-import java.time.Duration;
-
 public class DayPrepCheck extends TestBase {
     @When("I send the application to the background")
     public void iSendTheApplicationToTheBackground() {
@@ -28,29 +26,9 @@ public class DayPrepCheck extends TestBase {
     public void theApplicationShouldComeToTheForegroundOnScreen(String activityScreenTitle) {
     }
 
-    @And("The connectivity check should be started")
-    public void theConnectivityCheckShouldBeStarted() {
-        softAssert.assertEquals(dayPrepPage.getConnectivityCheckStartMessage(), AppConstants.CONNECTIVITY_CHECK_START_MESSAGE);
-    }
-
-    @And("The connectivity check should be in progress")
-    public void theConnectivityCheckShouldBeInProgress() {
-        softAssert.assertEquals(dayPrepPage.getConnectivityCheckInProgressMessage(), AppConstants.CONNECTIVITY_CHECK_IN_PROGRESS_MESSAGE);
-    }
-
     @And("The connectivity check should be passed")
     public void theConnectivityCheckShouldBePassed() {
         softAssert.assertEquals(dayPrepPage.getConnectivitySuccessfulMessage(), AppConstants.CONNECTIVITY_CHECK_SUCCESS_MESSAGE);
-    }
-
-    @And("The firmware check should be started")
-    public void theFirmwareCheckShouldBeStarted() {
-        softAssert.assertEquals(dayPrepPage.getFirmwareCheckStartMessage(), AppConstants.FIRMWARE_CHECK_START_MESSAGE);
-    }
-
-    @And("The firmware check should be in progress")
-    public void theFirmwareCheckShouldBeInProgress() {
-        softAssert.assertEquals(dayPrepPage.getFirmwareCheckInProgressMessage(), AppConstants.FIRMWARE_CHECK_IN_PROGRESS_MESSAGE);
     }
 
     @And("The firmware check should be passed")

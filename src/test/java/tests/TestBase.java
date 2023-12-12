@@ -53,9 +53,22 @@ public class TestBase extends AbstractTestNGCucumberTests {
     protected static SoftAssert softAssert;
 
     // Set up the environment for testing on an Android emulator
-    public static void Android_SetUp_NoResetTure() throws MalformedURLException {
+    public static void Android_SetUp_NoResetTrue() {
         UiAutomator2Options capabilities = ConfigHelper.configWithNoResetTrue();
-        driver = new AndroidDriver(new URL(APPIUM), capabilities);
+        try {
+            driver = new AndroidDriver(new URL(APPIUM), capabilities);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void Android_SetUp_NoResetFalse() {
+        UiAutomator2Options capabilities = ConfigHelper.configWithResetFalse();
+        try {
+            driver = new AndroidDriver(new URL(APPIUM), capabilities);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     // Set up the environment for testing on a physical Android device without clearing its cache and data

@@ -61,6 +61,7 @@ Feature: Login to the terminal
     When I click ok to close the login to terminal dialogue
     Then The login page should be opened
 
+    @Smoke
   # login failed due to no network connectivity
   Scenario: Login fails due to no network connectivity
     Given I am on the settings page

@@ -130,7 +130,7 @@ public class TicketRequestBuilder {
     public TicketRequestBuilder blockedNFCCardTicket() {
         TicketRequestBuilder builder = new TicketRequestBuilder();
 
-        builder.customUid("90C20233000000");
+        builder.customUid("20250533000000");
 
         JSONObject ticketData1 = new JSONObject();
         ticketData1.put("change_bus", 0);
@@ -154,7 +154,7 @@ public class TicketRequestBuilder {
     public TicketRequestBuilder reissueNFCCardTicket() {
         TicketRequestBuilder builder = new TicketRequestBuilder();
 
-        builder.customUid("06940FF6000000");
+        builder.customUid("D0229533000000");
 
         JSONObject ticketData1 = new JSONObject();
         ticketData1.put("change_bus", 0);
@@ -178,7 +178,7 @@ public class TicketRequestBuilder {
     public TicketRequestBuilder reissueNFCCardExpiredTicket() {
         TicketRequestBuilder builder = new TicketRequestBuilder();
 
-        builder.customUid("B6772DD6000000");
+        builder.customUid("D0229533000000");
 
         JSONObject ticketData1 = new JSONObject();
         ticketData1.put("change_bus", 0);
@@ -202,7 +202,7 @@ public class TicketRequestBuilder {
     public TicketRequestBuilder disabledNFCCardTicket() {
         TicketRequestBuilder builder = new TicketRequestBuilder();
 
-        builder.customUid("30CC7433000000");
+        builder.customUid("90C20233000000");
 
         JSONObject ticketData1 = new JSONObject();
         ticketData1.put("change_bus", 0);
@@ -364,6 +364,30 @@ public class TicketRequestBuilder {
 
         ticketData.put("legs_consumed", legsConsumedArray);
         builder.addTicket(ticketData);
+        return builder;
+    }
+
+    public TicketRequestBuilder reissueFromNFCCardTicket() {
+        TicketRequestBuilder builder = new TicketRequestBuilder();
+
+        builder.customUid("10420233000000");
+
+        JSONObject ticketData1 = new JSONObject();
+        ticketData1.put("change_bus", 0);
+        ticketData1.put("expiry_date", DateUtil.formatDate(DateUtil.modifyDaysToDate(DateUtil.getCurrentDate(), 10)));
+        ticketData1.put("pass_value", 20);
+        ticketData1.put("price", 100);
+        ticketData1.put("tap_in", 0);
+        ticketData1.put("terminal_id", 0);
+        ticketData1.put("ticket_type", "trip_pass");
+        ticketData1.put("fare_product_id", 1434);
+        ticketData1.put("ott_ticket_id", 284);
+        ticketData1.put("activation_date", "2023-06-06");
+        ticketData1.put("departure_location_id", 0);
+        ticketData1.put("destination_location_id", 0);
+        ticketData1.put("route_id", 0);
+        builder.addTicket(ticketData1);
+
         return builder;
     }
 }

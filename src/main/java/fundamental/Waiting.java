@@ -1,10 +1,7 @@
 package fundamental;
 
 import io.appium.java_client.android.AndroidDriver;
-import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -27,7 +24,7 @@ public class Waiting {
 
     public Waiting(AndroidDriver androidDriver) {
         this.driver = androidDriver;
-        this.timeout = 60;
+        this.timeout = 30;
         wait = new WebDriverWait(driver, Duration.ofSeconds(timeout));
     }
 
@@ -47,7 +44,16 @@ public class Waiting {
 
     public String pollForVisibilityOfElement(WebElement element) {
         String CONTENT_DESCRIPTION_ATTRIBUTE = "content-desc";
-        return pollForVisibilityOfElement(element, 1, CONTENT_DESCRIPTION_ATTRIBUTE);
+        try {
+            return pollForVisibilityOfElement(element, 1, CONTENT_DESCRIPTION_ATTRIBUTE);
+        } catch (Exception e) {
+            logger.logError(String.format("TimeoutException: Elements not visible: " + e.getMessage()));
+            try {
+                throw new Exception(e.getMessage());
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+        }
     }
 
     public String pollForVisibilityOfElement(WebElement element, int pollingTimeInNanos, String attributeToLookFor) {
@@ -172,8 +178,13 @@ public class Waiting {
     // findElementWithXPath finds the first WebElement that matches the provided XPath or
     // returns null if no matching elements are found.
     private WebElement findElementWithXPath(String xpath) {
-        List<WebElement> itemList = driver.findElements(By.xpath(xpath));
-        return itemList.isEmpty() ? null : itemList.get(0);
+        try {
+            List<WebElement> itemList = driver.findElements(By.xpath(xpath));
+            return itemList.isEmpty() ? null : itemList.get(0);
+        } catch (Exception e) {
+            logger.logError(String.format("TimeoutException: Elements not visible: " + e.getMessage()));
+            throw new RuntimeException(e);
+        }
     }
 
     // isEndOFList determines if the end of the list has been reached
@@ -202,13 +213,20 @@ public class Waiting {
             if (wait.until(ExpectedConditions.attributeToBe(element, attribute, textToBe))) {
                 return element;
             }
-        } catch (Exception e) {
+        } catch (TimeoutException e) {
             logger.logError("TimeoutException: No Such Text Found in The Attribute: " + e.getMessage());
+            throw new NoSuchElementException("Text: " + textToBe + " not found in Attribute: " + attribute + " in Element: " + element, e);
         }
+        return element;
+    }
+
+    public Boolean waitUntilAttributeToBeBoolean(WebElement element, String attribute, String textToBe) {
+        waitForElementVisibility(element);
         try {
-            throw new Exception("Text: " + textToBe + "not found in Attribute: " + attribute + "in Element: " + element);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            return wait.until(ExpectedConditions.attributeToBe(element, attribute, textToBe));
+        } catch (TimeoutException e) {
+            logger.logError("TimeoutException: No Such Text Found in The Attribute: " + e.getMessage());
+            throw new NoSuchElementException("Text: " + textToBe + " not found in Attribute: " + attribute + " in Element: " + element, e);
         }
     }
 

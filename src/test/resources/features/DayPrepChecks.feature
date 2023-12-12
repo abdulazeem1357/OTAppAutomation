@@ -81,11 +81,7 @@ Feature: Day preparation checks the application health. Download, and upload nec
     Then The side menu should be opened
     And I click on the day end button
     Then The day prep page should be opened
-#    And The connectivity check should be started
-#    And The connectivity check should be in progress
     And The connectivity check should be passed
-#    And The firmware check should be started
-#    And The firmware check should be in progress
     And The firmware check should be passed
     And The configuration check should be passed
     And The download data check should be passed

@@ -6,7 +6,7 @@ import java.util.List;
 public class UIDProvider {
 
     private static final List<String> UIDS = Arrays.asList(
-            "8069F932000000",
+            "8069F932000000", //8069F932000000
             "F0D7EF19000000",
             "166360F6000000",
             "90EB0E1A000000",
@@ -24,10 +24,10 @@ public class UIDProvider {
             "80D7FE32000000",
             "C6CEFCF5000000",
             "A0B6F719000000",
-            "90C20233000000",
-            "20250533000000",
-            "10420233000000",
-            "E62760F6000000"
+            "E62760F6000000",
+            "90C20233000000", //disabled
+            "20250533000000", //blocked
+            "10420233000000"  //re-issued
     );
 
     // This will track which UID to provide next.
