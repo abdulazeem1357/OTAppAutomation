@@ -1,7 +1,7 @@
 package pageObjects;
 
-import fundamental.AndroidBasics;
-import fundamental.Waiting;
+import fundamentals.AndroidBasics;
+import fundamentals.Waiting;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
@@ -108,7 +108,7 @@ public class RoutePage extends BasePage {
         return waiting.waitForElementVisibility(cashTicketCounter).getText();
     }
 
-    public String getNFCTicketCounterText() {
+    public String getCardTicketCounterText() {
         return waiting.waitForElementVisibility(NFCTicketCounter).getText();
     }
 

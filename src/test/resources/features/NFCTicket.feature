@@ -104,6 +104,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I click on the route number to start trip
     Then The route "Sosh Live Route 1" should be started successfully
 
+    @Regression @Smoke
      # perform a successful transaction using NFC card with an valid ticket
   Scenario: Perform successful valid NFC transaction
     Given I am on a route
@@ -111,6 +112,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     And The "Valid ticket" message should be displayed
 
+  @Regression
     # perform a successful transaction with multiple merchants tickets on the NFC card
   Scenario: Perform a successful transaction with multiple merchants tickets on the NFC card
     Given I am on a route
@@ -118,6 +120,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
 
+  @Regression
     # perform a successful transaction using a re-issued NFC card valid ticket
   Scenario: Perform successful valid NFC transaction using re-issued NFC card
     Given I am on a route
@@ -125,6 +128,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
 
+  @Regression @Smoke
     # perform a successful new main leg not allowed within transfer leg transaction using NFC card with a valid ticket
   Scenario: Perform a successful new main leg not allowed transaction using NFC card with a valid ticket
     Given I am on a route
@@ -132,6 +136,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Main leg transaction is not allowed" message should be displayed
 
+  @Regression @Smoke
     # perform a successful product has expired transaction using NFC card with an expired ticket
   Scenario: Perform successful expired NFC transaction
     Given I am on a route
@@ -139,6 +144,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "product has expired" message should be displayed
 
+  @Regression
     # perform a successful error in uid matching transaction using NFC card with a valid ticket
   Scenario: Perform a successful error in uid matching transaction using NFC card with a valid ticket
     Given I am on a route
@@ -146,6 +152,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Sorry, invalid card" message should be displayed
 
+  @Regression
     # perform a successful incorrect contract/station not found transaction using NFC card with a valid ticket
   Scenario: Perform a successful incorrect contract transaction using NFC card with a valid ticket
     Given I am on a route
@@ -153,6 +160,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Station Is Not Allowed" message should be displayed
 
+  @Regression
     # perform a successful no rides available for the day transaction using NFC card with a valid ticket
   Scenario: Perform a successful no rides available for the day transaction using NFC card with a valid ticket
     Given I am on a route
@@ -160,6 +168,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Rides Are Not Available" message should be displayed
 
+  @Regression @Smoke
     # perform a successful transfer leg within time transaction using NFC card with an valid ticket
   Scenario: Perform a successful transfer leg within time transaction using NFC card with an valid ticket
     Given I am on a route
@@ -168,6 +177,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
 
+  @Regression @Smoke
     # perform a successful transfer leg not allowed within within transfer time using NFC card with a valid ticket
   Scenario: Perform a successful transfer leg not allowed within transfer time transaction using NFC card with a valid ticket
     Given I am on a route
@@ -176,6 +186,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Transfer leg transaction is not allowed" message should be displayed
 
+  @Regression @Smoke
     # perform a successful Station not allowed transaction using NFC card with a valid ticket
   Scenario: Perform a successful Station not allowed transaction using NFC card with a valid ticket
     Given I am on a route
@@ -184,6 +195,7 @@ Feature: Perform NFC transactions without Authenticate Tag Worker
     When I tap NFC card on the left NFC reader
     Then The "Station Is Not Allowed" message should be displayed
 
+  @Regression
     # perform a successful transfer not allowed transaction using NFC card with a valid ticket
   Scenario: Perform a successful transfer not allowed transaction using NFC card with a valid ticket
     Given I am on a route

@@ -113,26 +113,34 @@ Feature: Complete E2E
     When I select a fare of "30.0" rands
     Then The select destinations menu should be opened
     When I select a "Sosh Transfer Station 1" destination
-    And I select ticket for "2" passenger
+    Then The process payment menu should be opened
+    And I select ticket for "1" passenger
+    Then The total amount should be "30.00"
+    And The ticket passengers count should be "01"
     When I click to purchase ticket for passengers
-    Then The ticket should be purchased successfully
-    And The passenger in count should increase by "2"
-    And Updated cash tickets should be displayed by increase of "2"
+    And The passenger in count should be "1"
+    And The passenger cash ticket counter should be "1"
 
       # perform a successful transaction using NFC card with an valid ticket
     And I have a valid ticket on NFC card
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
+    And The passenger in count should be "2"
+    And The card ticket counter should be "1"
 
     # perform a successful transaction with multiple merchants tickets on the NFC card
     And I have multiple valid merchant tickets on the NFC card
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
+    And The passenger in count should be "3"
+    And The card ticket counter should be "2"
 
       # perform a successful transaction using a re-issued NFC card valid ticket
     And I have a re-issued to NFC card
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
+    And The passenger in count should be "4"
+    And The card ticket counter should be "3"
 
       # perform a successful new main leg not allowed within transfer leg transaction using NFC card with a valid ticket
     And I have a valid ticket on NFC card with no main and transfer leg
@@ -164,6 +172,8 @@ Feature: Complete E2E
     And I navigate to the "Sosh Transfer Station 1" station
     When I tap NFC card on the left NFC reader
     Then The "Valid ticket" message should be displayed
+    And The passenger in count should be "5"
+    And The card ticket counter should be "4"
 
       # perform a successful transfer leg not allowed within within transfer time using NFC card with a valid ticket
     And I have a valid ticket on NFC card with no main and transfer leg
@@ -185,10 +195,16 @@ Feature: Complete E2E
     When I click on the end trip dialogue yes button
     Then The trip should end
     And The end trip "Sosh Live Route 1 ( Sosh Live Route 1 RP )" page should be opened
+    And The total cash transaction should be "1"
+    And The total cash passengers count should be "1"
+    And The total fare product transaction should be "4"
+    And The total fare product passengers count should be "4"
+    And The total transactions should be "5"
+    And The total passengers should be "5"
     When I click on the end trip page cancel button
     Then The shift page should be opened
 
-    # start an ad hoc shift trip successfully
+      # start an ad hoc shift trip successfully
     Given I am on the shift page
     When I click on the start trip button
     Then The trips page should be opened

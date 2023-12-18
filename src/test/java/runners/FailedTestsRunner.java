@@ -1,7 +1,7 @@
 package runners;
 
+import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
-import tests.TestBase;
 
 // Class for rerunning the failed scenarios with CucumberOptions annotations
 // features parameter is set to "@target/failedrun.txt" to run only the failed tests from the previous run
@@ -18,5 +18,5 @@ import tests.TestBase;
 })
 
 // Extends the TestBase class for setup and teardown methods
-public class FailedTestsRunner extends TestBase {
+public class FailedTestsRunner extends AbstractTestNGCucumberTests {
 }

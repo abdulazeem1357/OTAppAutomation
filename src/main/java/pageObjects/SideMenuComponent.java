@@ -1,6 +1,6 @@
 package pageObjects;
 
-import fundamental.Waiting;
+import fundamentals.Waiting;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;

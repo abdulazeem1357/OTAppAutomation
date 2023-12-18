@@ -1,9 +1,8 @@
 package pageObjects;
 
-import fundamental.Waiting;
+import fundamentals.Waiting;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import io.cucumber.java.en_scouse.An;
 import org.openqa.selenium.WebElement;
 
 public class TerminalSettingsPage extends BasePage {

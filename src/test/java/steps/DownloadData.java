@@ -1,22 +1,41 @@
 package steps;
 
-import fundamental.AndroidBasics;
+import cucumber.TestContext;
+import fundamentals.AndroidBasics;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import tests.TestBase;
+import managers.SoftAssertManager;
+import pageObjects.DownloadDataPage;
+import pageObjects.MainPage;
+import pageObjects.SideMenuComponent;
 import utils.AppConstants;
 
-public class DownloadData extends TestBase {
+public class DownloadData {
+
+    TestContext testContext;
+    MainPage mainPage;
+    SideMenuComponent sideMenuComponent;
+    DownloadDataPage downloadDataPage;
+    AndroidBasics androidBasics;
+
+    public DownloadData(TestContext context) {
+        testContext = context;
+        mainPage = testContext.getPageObjectManager().getMainPage();
+        sideMenuComponent = testContext.getPageObjectManager().getSideMenuComponent();
+        downloadDataPage = testContext.getPageObjectManager().getDownloadDataPage();
+        androidBasics = testContext.getPageObjectManager().getAndroidBasics();
+    }
+
     @When("I navigate to the settings page")
     public void iNavigateToTheSettingsPage() {
-        AndroidBasics.navigateBack();
+        androidBasics.navigateBack();
     }
 
     @When("I navigate to the main page")
     public void iNavigateToTheMainPage() {
-        AndroidBasics.navigateBack();
+        androidBasics.navigateBack();
     }
 
     @Given("I am already logged in")
@@ -29,7 +48,7 @@ public class DownloadData extends TestBase {
 
     @And("I am on the main page")
     public void iAmOnTheMainPage() {
-        softAssert.assertEquals(mainPage.getMainPageTitleText(), AppConstants.MAIN_PAGE_TITLE);
+        SoftAssertManager.getSoftAssert().assertEquals(mainPage.getMainPageTitleText(), AppConstants.MAIN_PAGE_TITLE);
     }
 
     @When("I click on the download data page button")
@@ -39,7 +58,7 @@ public class DownloadData extends TestBase {
 
     @Then("The download data page should be opened")
     public void theDownloadDataPageShouldBeOpened() {
-        softAssert.assertEquals(downloadDataPage.getDownloadDataPageTitle(), AppConstants.DOWNLOAD_DATA_PAGE_TITLE);
+        SoftAssertManager.getSoftAssert().assertEquals(downloadDataPage.getDownloadDataPageTitle(), AppConstants.DOWNLOAD_DATA_PAGE_TITLE);
     }
 
     @And("I click on the start download button")
@@ -49,12 +68,12 @@ public class DownloadData extends TestBase {
 
     @Then("The download should be started")
     public void theDownloadShouldBeStarted() {
-        softAssert.assertEquals(downloadDataPage.getDialogueHeader(), AppConstants.DOWNLOAD_DATA_DIALOGUE_TITLE);
+        SoftAssertManager.getSoftAssert().assertEquals(downloadDataPage.getDialogueHeader(), AppConstants.DOWNLOAD_DATA_DIALOGUE_TITLE);
     }
 
     @And("The data should be downloaded successfully")
     public void theDataShouldBeDownloadedSuccessfully() {
-        softAssert.assertEquals(downloadDataPage.getSuccessDialogueMessage(), AppConstants.DOWNLOAD_SUCCESS_MESSAGE);
+        SoftAssertManager.getSoftAssert().assertEquals(downloadDataPage.getSuccessDialogueMessage(), AppConstants.DOWNLOAD_SUCCESS_MESSAGE);
     }
 
     @When("I click ok to accept the data download dialogue")
@@ -64,16 +83,16 @@ public class DownloadData extends TestBase {
 
     @And("I turn off the wifi connectivity")
     public void iTurnOffTheWifiConnectivity() {
-        AndroidBasics.turnOffInternetConnectivity();
+        androidBasics.turnOffInternetConnectivity();
     }
 
     @And("The data download should be unsuccessful")
     public void theDataDownloadShouldBeUnsuccessful() {
-        softAssert.assertEquals(downloadDataPage.getUnsuccessfulDialogueMessage(), AppConstants.DOWNLOAD_FAILURE_MESSAGE);
+        SoftAssertManager.getSoftAssert().assertEquals(downloadDataPage.getUnsuccessfulDialogueMessage(), AppConstants.DOWNLOAD_FAILURE_MESSAGE);
     }
 
     @And("I turn on the wifi connectivity")
     public void iTurnOnTheWifiConnectivity() {
-        AndroidBasics.turnOnInternetConnectivity();
+        androidBasics.turnOnInternetConnectivity();
     }
 }

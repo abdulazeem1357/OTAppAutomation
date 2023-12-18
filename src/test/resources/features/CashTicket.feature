@@ -1,7 +1,7 @@
 Feature: Perform cash tickets
 
   Background:
-    # set the gps to if available
+      # set the gps to if available
     Given I launch the application
     Then The main page should be opened
     When I click on the side menu button
@@ -26,7 +26,7 @@ Feature: Perform cash tickets
     When I click on the terminal settings page button
     Then The terminal settings page should be opened
 
-     # turn off the auto disable wifi
+      # turn off the auto disable wifi
     When I click on the auto disable wifi button
     Then The auto disable wifi dialogue should be opened
     And I click on the no button on the auto disable wifi dialogue
@@ -36,7 +36,7 @@ Feature: Perform cash tickets
     When I navigate to the settings page
     Then The settings page should be opened
 
-    # login to the terminal successfully
+      # login to the terminal successfully
     Given I am on the settings page
     When I click on the login page button
     Then The login page should be opened
@@ -53,13 +53,13 @@ Feature: Perform cash tickets
     When I click ok to close the login to terminal dialogue
     Then The login page should be opened
 
-    # navigate to the mainPage
+      # navigate to the mainPage
     When I navigate to the settings page
     Then The settings page should be opened
     When I navigate to the main page
     Then The main page should be opened
 
-    # downloading the data successfully
+      # downloading the data successfully
     Given I am already logged in
     And I am on the main page
     When I click on the side menu button
@@ -73,7 +73,7 @@ Feature: Perform cash tickets
     Then The download data page should be opened
     When I navigate to the main page from download page
 
-    # login to ad hoc shift
+      # login to ad hoc shift
     Given I am on the main page
     And I send the application to the background
     Then The day prep page should be opened
@@ -87,7 +87,7 @@ Feature: Perform cash tickets
     Then I should be logged in to the shift successfully
     And The shift page should be opened
 
-    # start an ad hoc shift trip successfully
+      # start an ad hoc shift trip successfully
     Given I am on the shift page
     When I click on the start trip button
     Then The trips page should be opened
@@ -97,7 +97,8 @@ Feature: Perform cash tickets
     When I click on the route number to start trip
     Then The route "Sosh Live Route 1" should be started successfully
 
-  # perform a single cash transaction successfully
+  @Regression @Smoke
+    # perform a single cash transaction successfully
   Scenario: Purchase a single cash ticket successfully
     Given I am on a route
     When I click to open select fare menu
@@ -105,17 +106,103 @@ Feature: Perform cash tickets
     When I select a fare of "30.0" rands
     Then The select destinations menu should be opened
     When I select a "Sosh Transfer Station 1" destination
-    And I select ticket for "2" passenger
+    Then The process payment menu should be opened
+    And I select ticket for "1" passenger
+    Then The total amount should be "30.00"
+    And The ticket passengers count should be "01"
     When I click to purchase ticket for passengers
-    Then The ticket should be purchased successfully
-    And The passenger in count should increase by "2"
-    And Updated cash tickets should be displayed by increase of "2"
+    And The passenger in count should be "1"
+    And The passenger cash ticket counter should be "1"
     When I navigate to the "Sosh Transfer Station 1" station
-    Then The station should be changed
-    And The passenger should be marked as out
-    And The passenger out count should increase by "2"
+    And The passenger out count should be "1"
 
-    #end trip
+      #end trip
+    When I click on the side menu button
+    Then The side menu should be opened
+    When I click on the end trip button
+    Then The end trip dialogue should be opened
+    When I click on the end trip dialogue yes button
+    Then The trip should end
+    And The end trip "Sosh Live Route 1 ( Sosh Live Route 1 RP )" page should be opened
+    And The total cash transaction should be "1"
+    And The total cash passengers count should be "1"
+    And The total transactions should be "1"
+    And The total passengers should be "1"
+    When I click on the end trip page cancel button
+    Then The shift page should be opened
+
+  @Regression @ignore
+    # perform multiple cash transaction over different stations successfully
+  Scenario: Purchase multiple cash tickets over different stations
+    Given I am on a route
+    When I click to open select fare menu
+    Then The select fare menu should be opened
+    When I select a fare of "30.0" rands
+    Then The select destinations menu should be opened
+    When I select a "Sosh Transfer Station 1" destination
+    Then The process payment menu should be opened
+    And I select ticket for "2" passenger
+    And The ticket passengers count should be "02"
+    Then The total amount should be "60.00"
+    When I click to purchase ticket for passengers
+    And The passenger in count should be "2"
+    And The passenger cash ticket counter should be "2"
+    When I navigate to the "Sosh Transfer Station 1" station
+    And The passenger out count should be "2"
+
+      # purchase some more tickets from the current station
+    When I click to open select fare menu
+    Then The select fare menu should be opened
+    When I select a fare of "40.0" rands
+    Then The select destinations menu should be opened
+    When I select a "Sosh Transfer Station 4" destination
+    Then The process payment menu should be opened
+    And I select ticket for "4" passenger
+    And The ticket passengers count should be "04"
+    Then The total amount should be "160.00"
+    When I click to purchase ticket for passengers
+    And The passenger in count should be "6"
+    And The passenger cash ticket counter should be "6"
+    When I navigate to the "Sosh Transfer Station 4" station
+    And The passenger out count should be "6"
+
+      # end trip
+    When I click on the side menu button
+    Then The side menu should be opened
+    When I click on the end trip button
+    Then The end trip dialogue should be opened
+    When I click on the end trip dialogue yes button
+    Then The trip should end
+    And The end trip "Sosh Live Route 1 ( Sosh Live Route 1 RP )" page should be opened
+    And The total cash transaction should be "6"
+    And The total cash passengers count should be "6"
+    And The total transactions should be "6"
+    And The total passengers should be "6"
+    When I click on the end trip page cancel button
+    Then The shift page should be opened
+
+  @Regression @ignore
+    # perform cash transactions by adding and removing ticket passengers on the ticket purchase activity
+  Scenario: Modify and purchase cash tickets on the ticket purchase activity
+    Given I am on a route
+    When I click to open select fare menu
+    Then The select fare menu should be opened
+    When I select a fare of "30.0" rands
+    Then The select destinations menu should be opened
+    When I select a "Sosh Transfer Station 1" destination
+    Then The process payment menu should be opened
+    And I select ticket for "4" passenger
+    Then The total amount should be "120.00"
+    When I remove ticket for "2" passenger
+    Then The total amount should be "60.00"
+    And The ticket passengers count should be "02"
+    When I click to purchase ticket for passengers
+    And The passenger in count should be "2"
+    And The passenger cash ticket counter should be "2"
+    When I navigate to the "Sosh Transfer Station 1" station
+    And The passenger out count should be "2"
+
+      # end trip
     When I click on the side menu button
     Then The side menu should be opened
     When I click on the end trip button
@@ -129,45 +216,3 @@ Feature: Perform cash tickets
     And The total passengers should be "2"
     When I click on the end trip page cancel button
     Then The shift page should be opened
-
-# perform multiple cash transaction successfully
-  Scenario Outline: Purchase multiple cash tickets successfully
-    Given I am on a route
-    When I click to open select fare menu
-    Then The select fare menu should be opened
-    When I select a fare of "<fare>" rands
-    Then The select destinations menu should be opened
-    When I select a "<destinationStation>" destination
-    And I select ticket for "<passengerCount>" passenger
-    When I click to purchase ticket for passengers
-    Then The ticket should be purchased successfully
-    And The passenger in count should increase by "<passengerCount>"
-    And Updated cash tickets should be displayed by increase of "<passengerCount>"
-    When I navigate to the "<destinationStation>" station
-    Then The station should be changed
-    And The passenger should be marked as out
-    And The passenger out count should increase by "<passengerCount>"
-
-    # end trip
-    When I click on the side menu button
-    Then The side menu should be opened
-    When I click on the end trip button
-    Then The end trip dialogue should be opened
-    When I click on the end trip dialogue yes button
-    Then The trip should end
-    And The end trip "Sosh Live Route 1 ( Sosh Live Route 1 RP )" page should be opened
-    And The total cash transaction should be "<transactionCount>"
-    And The total cash passengers count should be "<passengerCount>"
-    And The total transactions should be "<transactionCount>"
-    And The total passengers should be "<passengerCount>"
-    When I click on the end trip page cancel button
-    Then The shift page should be opened
-
-    Examples:
-      | fare  | destinationStation      | transactionCount | passengerCount |
-      | 30.0  | Sosh Transfer Station 1 | 1                | 1              |
-      | 40.0  | Sosh Transfer Station 2 | 2                | 2              |
-      | 80.0  | Sosh Station 3          | 3                | 3              |
-      | 90.0  | Sosh Station 5          | 4                | 4              |
-      | 100.0 | Sosh Station 4          | 4                | 4              |
-

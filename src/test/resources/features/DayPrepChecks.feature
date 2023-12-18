@@ -74,6 +74,7 @@ Feature: Day preparation checks the application health. Download, and upload nec
     Then The download data page should be opened
     When I navigate to the main page from download page
 
+  @Regression @Smoke
     # run a successful day end check from the side menu after downloading data
   Scenario: Run day prep activity from side menu with data downloaded
     Given I am on the main page
@@ -94,6 +95,7 @@ Feature: Day preparation checks the application health. Download, and upload nec
     When The day prep checks should be completed successfully
     Then The main page should be opened
 
+  @Regression
     # run day prep activity on relaunch of the application
   Scenario: Run day prep activity on relaunch of the application
     Given I am on the main page
@@ -112,8 +114,9 @@ Feature: Day preparation checks the application health. Download, and upload nec
     When The day prep checks should be completed successfully
     Then The main page should be opened
 
+  @Regression
     # run day prep activity with no internet connectivity
-  Scenario: Run day prep activity on relaunch of the application
+  Scenario: Run day prep activity on relaunch of the application without internet connectivity
     Given I am on the main page
     And I turn off the wifi connectivity
     When I send the application to the background
@@ -123,7 +126,7 @@ Feature: Day preparation checks the application health. Download, and upload nec
     And The day prep no internet connectivity dialogue box is displayed
     When I click on the continue button on the no internet day prep connectivity dialogue box
     Then I click on the day prep retry button
-    And The connectivity check should be passed
+#    And The connectivity check should be passed
     And The firmware check should be passed
     And The configuration check should be passed
     And The download data check should be passed

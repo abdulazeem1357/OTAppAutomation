@@ -27,6 +27,7 @@ Feature: Login to the terminal
     When I navigate to the settings page
     Then The settings page should be opened
 
+  @Regression @Smoke
     # login to the terminal successfully
   Scenario: Login to the Terminal successfully
     Given I am on the settings page
@@ -45,6 +46,7 @@ Feature: Login to the terminal
     When I click ok to close the login to terminal dialogue
     Then The login page should be opened
 
+  @Regression
   # login failed Terminal Server is not valid when no Terminal Server is selected
   Scenario: Login fails when no Terminal Server is selected
     Given I am on the settings page
@@ -61,7 +63,7 @@ Feature: Login to the terminal
     When I click ok to close the login to terminal dialogue
     Then The login page should be opened
 
-    @Smoke
+  @Regression
   # login failed due to no network connectivity
   Scenario: Login fails due to no network connectivity
     Given I am on the settings page
@@ -73,6 +75,7 @@ Feature: Login to the terminal
     When I click ok to close the login to terminal dialogue
     Then The login page should be opened
 
+  @Regression
     # This scenario outline covers various login possibilities
     # and their outcomes based on different combinations of User ID, password, and terminal environment.
     # It checks the appropriate feedback messages for various invalid and valid inputs.

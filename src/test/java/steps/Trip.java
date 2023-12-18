@@ -1,16 +1,36 @@
 package steps;
 
+import cucumber.TestContext;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import tests.TestBase;
+import managers.SoftAssertManager;
+import pageObjects.RoutePage;
+import pageObjects.ShiftPage;
+import pageObjects.SideMenuComponent;
+import pageObjects.TripPage;
 import utils.AppConstants;
 
-public class Trip extends TestBase {
+public class Trip {
+
+    TestContext testContext;
+    ShiftPage shiftPage;
+    TripPage tripPage;
+    RoutePage routePage;
+    SideMenuComponent sideMenuComponent;
+
+    public Trip(TestContext context) {
+        testContext = context;
+        shiftPage = testContext.getPageObjectManager().getShiftPage();
+        tripPage = testContext.getPageObjectManager().getTripPage();
+        routePage = testContext.getPageObjectManager().getRoutePage();
+        sideMenuComponent = testContext.getPageObjectManager().getSideMenuComponent();
+    }
+
     @Given("I am on the shift page")
     public void iAmOnTheShiftPage() {
-        softAssert.assertEquals(shiftPage.getShiftPageTitle(), AppConstants.SHIFT_PAGE_TITLE);
+        SoftAssertManager.getSoftAssert().assertEquals(shiftPage.getShiftPageTitle(), AppConstants.SHIFT_PAGE_TITLE);
     }
 
     @When("I click on the start trip button")
@@ -20,7 +40,7 @@ public class Trip extends TestBase {
 
     @Then("The trips page should be opened")
     public void theTripsPageShouldBeOpened() {
-        softAssert.assertEquals(tripPage.getSelectRoutePageText(), AppConstants.TRIP_PAGE_TITLE);
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getSelectRoutePageText(), AppConstants.TRIP_PAGE_TITLE);
     }
 
     @And("I search for a {string} route")
@@ -35,7 +55,7 @@ public class Trip extends TestBase {
 
     @Then("The select route direction pop up should be opened")
     public void theSelectRouteDirectionPopUpShouldBeOpened() {
-        softAssert.assertEquals(tripPage.getSelectRouteDirectionDialogueHeader(), AppConstants.ROUTE_DIRECTION_DIALOGUE_TITLE);
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getSelectRouteDirectionDialogueHeader(), AppConstants.ROUTE_DIRECTION_DIALOGUE_TITLE);
     }
 
     @When("I click on the route number to start trip")
@@ -45,7 +65,7 @@ public class Trip extends TestBase {
 
     @Then("The route {string} should be started successfully")
     public void theRouteShouldBeStartedSuccessfully(String routeID) {
-        softAssert.assertTrue(routePage.getRouteName().contains(routeID));
+        SoftAssertManager.getSoftAssert().assertTrue(routePage.getRouteName().contains(routeID));
     }
 
     @When("I click on the end trip button")
@@ -55,7 +75,7 @@ public class Trip extends TestBase {
 
     @Then("The end trip dialogue should be opened")
     public void theEndTripDialogueShouldBeOpened() {
-        softAssert.assertEquals(sideMenuComponent.getAlertDialogueTitle(), "End Trip");
+        SoftAssertManager.getSoftAssert().assertEquals(sideMenuComponent.getAlertDialogueTitle(), "End Trip");
     }
 
     @When("I click on the end trip dialogue yes button")
@@ -69,33 +89,41 @@ public class Trip extends TestBase {
 
     @And("The end trip {string} page should be opened")
     public void theEndTripPageShouldBeOpened(String routeID) {
-        System.out.println("Route ID: " + routeID);
-        System.out.println("Get End Trip Route ID: " + tripPage.getEndTripRoute());
-        softAssert.assertTrue(tripPage.getEndTripRoute().contains(routeID));
+        SoftAssertManager.getSoftAssert().assertTrue(tripPage.getEndTripRoute().contains(routeID));
     }
 
     @And("The total cash transaction should be {string}")
     public void theTotalCashTransactionShouldBe(String totalCashTransaction) {
-        softAssert.assertEquals(tripPage.getTotalCashTransaction(), totalCashTransaction);
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getTotalCashTransaction(), totalCashTransaction);
     }
 
     @And("The total cash passengers count should be {string}")
     public void theTotalCashPassengersCountShouldBe(String totalCashPassenger) {
-        softAssert.assertEquals(tripPage.getTotalCashPassenger(), totalCashPassenger);
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getTotalCashPassenger(), totalCashPassenger);
     }
 
     @And("The total transactions should be {string}")
     public void theTotalTransactionsShouldBe(String totalTransaction) {
-        softAssert.assertEquals(tripPage.getTotalTransaction(), totalTransaction);
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getTotalTransaction(), totalTransaction);
     }
 
     @And("The total passengers should be {string}")
     public void theTotalPassengersShouldBe(String totalPassenger) {
-        softAssert.assertEquals(tripPage.getTotalPassenger(), totalPassenger);
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getTotalPassenger(), totalPassenger);
     }
 
     @When("I click on the end trip page cancel button")
     public void iClickOnTheCancelButton() {
         tripPage.clickEndTripCancelButton();
+    }
+
+    @And("The total fare product transaction should be {string}")
+    public void theTotalFareProductTransactionShouldBe(String totalFareProductTransaction) {
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getTotalFareProductTransaction(), totalFareProductTransaction);
+    }
+
+    @And("The total fare product passengers count should be {string}")
+    public void theTotalFareProductPassengersCountShouldBe(String totalFareProductPassengers) {
+        SoftAssertManager.getSoftAssert().assertEquals(tripPage.getTotalFareProductPassenger(), totalFareProductPassengers);
     }
 }

@@ -43,6 +43,7 @@ public class AppConstants {
     public static final String TERMINAL_SETTINGS_PAGE_TITLE = "TERMINAL SETTINGS";
     public static final String EAT_STATUS_NO = "No";
     public static final String AUTO_DISABLE_WIFI_ALERT_TITLE = "Auto Disable Wifi";
+    public static final String PROCESS_PAYMENT_HEADER_TITLE = "Process Payment";
     public final String EXPIRED_NFC_TICKET_MESSAGE = "product has expired";
     public static final String TRIP_PAGE_TITLE = "Select Route";
     public static final String ROUTE_ID = "St Francis Bay to Oyster Bay Turnoff";

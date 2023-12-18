@@ -1,7 +1,7 @@
 Feature: Shift Login
 
   Background:
-    # set the gps to if available
+      # set the gps to if available
     Given I launch the application
     Then The main page should be opened
     When I click on the side menu button
@@ -73,6 +73,7 @@ Feature: Shift Login
     Then The download data page should be opened
     When I navigate to the main page from download page
 
+  @Regression @Smoke
     # login to the ad hoc shift successfully
   Scenario Outline: Complete an ad hoc shift successfully
     Given I am on the main page
@@ -99,6 +100,7 @@ Feature: Shift Login
       | driverID | driverPin |
       | 00002    | 28071     |
 
+  @Regression
   # This scenario outline covers various driver shift login possibilities
   # and their outcomes based on different combinations of Driver ID, Pin, and Waybill combinations.
   # It checks the appropriate feedback messages for various invalid and valid inputs.
@@ -120,6 +122,7 @@ Feature: Shift Login
       | 00002    |           |         | Pin is not valid          |
       | 00002    | 97896     |         | Invalid Employee Password |
 
+    @Regression
   Scenario: Successfully cancel Ad-hoc shift before starting
     Given I am on the main page
     And I send the application to the background

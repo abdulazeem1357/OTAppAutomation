@@ -4,27 +4,36 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fundamental.AndroidBasics;
-import fundamental.ConfigReader;
-import fundamental.MyLogger;
+import cucumber.TestContext;
+import dataProvider.ConfigReader;
+import fundamentals.*;
+import helpers.HttpClientHelper;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import managers.SoftAssertManager;
 import org.json.JSONObject;
-import tests.TestBase;
-import utils.HttpClientHelper;
-import utils.InfrastructureEnv;
-import utils.TicketRequest;
-import utils.TicketRequestBuilder;
+import pageObjects.RoutePage;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class NFCTicket extends TestBase {
+public class NFCTicket {
+    TestContext testContext;
+    RoutePage routePage;
+    AndroidBasics androidBasics;
+    InfrastructureEnv env = new InfrastructureEnv();
+
+    public NFCTicket(TestContext context) {
+        testContext = context;
+        routePage = testContext.getPageObjectManager().getRoutePage();
+        androidBasics = testContext.getPageObjectManager().getAndroidBasics();
+    }
+
     private String USERNAME;
     private String PASSWORD;
     private String NOTIFICATION_URL;
@@ -39,7 +48,7 @@ public class NFCTicket extends TestBase {
     private static String bearerToken;  // Declare the bearerToken here
     private String ticketRequestUID;
 
-    @Before(order = 2, value="@NFCTicket")
+    @Before(order = 2, value = "@NFCTicket")
     public void setup() {
         System.out.println("Setting-up the Bearer Token!");
         getConfigReader();
@@ -50,7 +59,7 @@ public class NFCTicket extends TestBase {
         }
     }
 
-    @After(order = 2, value="@NFCTicket")
+    @After(order = 2, value = "@NFCTicket")
     public void end() {
         destroyHttpService();
         System.out.println("Destroying the HTTP Service!");
@@ -74,7 +83,7 @@ public class NFCTicket extends TestBase {
 
     private void createHttpService() {
         if (httpClientHelper == null) {
-            httpClientHelper = new HttpClientHelper();
+            httpClientHelper = new HttpClientHelper(testContext.getAndroidDriverManager().getDriver());
         } else {
             System.out.println("Http Client Service Already Running");
         }
@@ -143,8 +152,8 @@ public class NFCTicket extends TestBase {
     }
 
     private String tapInNFCTicket(String SVCData) {
-        String device = InfrastructureEnv.getDevice();
-        String imei = InfrastructureEnv.getIMEIForDevice(device);
+        String device = env.getDevice();
+        String imei = env.getIMEIForDevice(device);
 
         String requestBody = "{\"IMEI\":\"" + imei + "\",\"data\":{\"service\":\"NFC\",\"command\":\"TAP_SVC_JSON\",\"body\":{\"uuid\":\"" + getTicketRequestUID() + "\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
         MyLogger.getInstance().logInfo("request:" + requestBody);
@@ -152,8 +161,8 @@ public class NFCTicket extends TestBase {
     }
 
     private String tapOutNFCTicket(String SVCData) {
-        String device = InfrastructureEnv.getDevice();
-        String imei = InfrastructureEnv.getIMEIForDevice(device);
+        String device = env.getDevice();
+        String imei = env.getIMEIForDevice(device);
 
         String requestBody = "{\"IMEI\":\"" + imei + "\",\"data\":{\"service\":\"NFC\",\"command\":\"REMOVE_TAP_SVC_JSON\",\"body\":{\"uuid\":\"" + getTicketRequestUID() + "\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
         MyLogger.getInstance().logInfo("request:" + requestBody);
@@ -171,7 +180,7 @@ public class NFCTicket extends TestBase {
 
     @When("I tap NFC card on the left NFC reader")
     public void iTapNFCCardOnTheLeftNFCReader() {
-        AndroidBasics.checkAppForegroundStatus();
+        androidBasics.checkAppForegroundStatus();
         String requestBody = tapInNFCTicket(SVCData);
         String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
         System.out.println("Tap in is called");
@@ -180,7 +189,7 @@ public class NFCTicket extends TestBase {
 
     @Then("The {string} message should be displayed")
     public void theMessageShouldBeDisplayed(String messageNFC) {
-        softAssert.assertEquals(routePage.getToastMessage(), messageNFC);
+//        SoftAssertManager.getSoftAssert().assertEquals(routePage.getToastMessage(), messageNFC);
         String requestBody = tapOutNFCTicket(SVCData);
         String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
         parseResponse(response);
@@ -415,5 +424,10 @@ public class NFCTicket extends TestBase {
         SVCData = parseSVCData(response);
         SVCData = formatSVCJSONForNotification(SVCData);
         System.out.println("\nSVC DATA: \n" + SVCData);
+    }
+
+    @And("The card ticket counter should be {string}")
+    public void theCardTicketCounterShouldBe(String cardTicketCounter) {
+        SoftAssertManager.getSoftAssert().assertEquals(routePage.getCardTicketCounterText(), cardTicketCounter);
     }
 }

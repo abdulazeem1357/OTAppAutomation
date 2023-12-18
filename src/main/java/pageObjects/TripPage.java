@@ -1,7 +1,7 @@
 package pageObjects;
 
-import fundamental.AndroidBasics;
-import fundamental.Waiting;
+import fundamentals.AndroidBasics;
+import fundamentals.Waiting;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.pagefactory.AndroidFindBy;
 import org.openqa.selenium.WebElement;
@@ -9,9 +9,12 @@ import org.openqa.selenium.WebElement;
 public class TripPage extends BasePage {
     private final Waiting waiting;
 
+    AndroidBasics androidBasics;
+
     public TripPage(AndroidDriver androidDriver) {
         super(androidDriver);
         waiting = new Waiting(androidDriver);
+        androidBasics = new AndroidBasics(androidDriver);
     }
 
     @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/androidx.drawerlayout.widget.DrawerLayout/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.LinearLayout[2]/android.widget.RelativeLayout/android.widget.TextView")
@@ -98,7 +101,7 @@ public class TripPage extends BasePage {
     public String getEndTripRoute() {
         waiting.waitForElementVisibility(endTripRoute);
 //        AndroidBasics.swipeVertical();
-        AndroidBasics.scroll(endTripCancelButton, AndroidBasics.Direction.VERTICAL);
+        androidBasics.scroll(endTripCancelButton, AndroidBasics.Direction.VERTICAL);
         return waiting.waitForElementVisibility(endTripRoute).getText();
     }
 

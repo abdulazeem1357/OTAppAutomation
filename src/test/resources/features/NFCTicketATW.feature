@@ -97,24 +97,21 @@ Feature: Perform NFC transactions with Authenticate Tag Worker
     Then The select route direction pop up should be opened
     When I click on the route number to start trip
     Then The route "Sosh Live Route 1" should be started successfully
-
-      # perform a successful transaction using a blocked NFC card
-  Scenario: Perform successful blocked NFC card transaction
     Given I am on a route
+
+  @Regression
+    # perform a successful transaction using a blocked NFC card
+  Scenario: Perform successful blocked, re-issued, and disabled NFC card transactions
     And I have a blocked NFC card
     When I tap NFC card on the left NFC reader
     Then The "Card is blocked" message should be displayed
 
-    # perform a successful card is re-issued transaction
-  Scenario: Perform a successful card is re-issued transaction
-    Given I am on a route
+      # perform a successful card is re-issued transaction
     And I have a re-issued from NFC card
     When I tap NFC card on the left NFC reader
     Then The "Card is reissued" message should be displayed
 
-    # perform a successful transaction using a disabled NFC card
-  Scenario: Perform a successful disabled NFC card transaction
-    Given I am on a route
+      # perform a successful transaction using a disabled NFC card
     And I have a disabled NFC card
     When I tap NFC card on the left NFC reader
     Then The "Card is disabled" message should be displayed

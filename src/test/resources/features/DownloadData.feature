@@ -60,7 +60,8 @@ Feature: Download Data
     When I navigate to the main page
     Then The main page should be opened
 
-    #successfully download the data with a healthy internet connection
+  @Regression @smoke
+    # successfully download the data with a healthy internet connection
   Scenario: Download data successfully
     Given I am already logged in
     And I am on the main page
@@ -74,7 +75,8 @@ Feature: Download Data
     When I click ok to accept the data download dialogue
     Then The download data page should be opened
 
-    #should not be able to download the data when there is no internet connectivity
+  @Regression
+    # should not be able to download the data when there is no internet connectivity
   Scenario: Download data fails due to no internet connectivity
     Given I am already logged in
     And I am on the main page

@@ -87,6 +87,7 @@ Feature: Trip
     Then I should be logged in to the shift successfully
     And The shift page should be opened
 
+  @Regression @Smoke
     # complete an ad hoc shift trip successfully
   Scenario Outline: Complete an ad hoc shift trip successfully
     Given I am on the shift page
