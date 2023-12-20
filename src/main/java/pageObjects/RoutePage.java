@@ -71,6 +71,10 @@ public class RoutePage extends BasePage {
         return waiting.waitForTextToBePresentInElement(bodyText, ConstantsPage.ROUTE_PAGE_BODY_TEXT).getText();
     }
 
+    public String getNFCBodyText() {
+        return waiting.getText(bodyText);
+    }
+
     public void clickCashTicketMenuButton() {
         waiting.click(cashTicketMenuButton);
     }

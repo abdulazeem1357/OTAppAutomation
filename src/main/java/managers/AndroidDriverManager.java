@@ -15,20 +15,28 @@ public class AndroidDriverManager {
 
     // URL for the Appium Server, APPIUM variable to store the URL for the Appium server
     private final static String APPIUM = "http://localhost:4723/wd/hub";
+
+    // InfrastructureEnv class object
     InfrastructureEnv env = new InfrastructureEnv();
+
+    // Returns the driver
     public AndroidDriver getDriver() {
         if (driver == null) driver = createDriver();
         return driver;
     }
 
+    // Create driver based on the driverType received from the Infrastructure Class
     private AndroidDriver createDriver() {
         if (Objects.equals(env.getDriverType(), "physicalDeviceNoReset")) {
             driver = physicalDeviceNoReset();
-        }if (Objects.equals(env.getDriverType(), "physicalDeviceFullReset")) {
+        }
+        if (Objects.equals(env.getDriverType(), "physicalDeviceFullReset")) {
             driver = physicalDeviceFullReset();
-        }if (Objects.equals(env.getDriverType(), "emulatorDeviceNoReset")) {
+        }
+        if (Objects.equals(env.getDriverType(), "emulatorDeviceNoReset")) {
             driver = emulatorDeviceNoReset();
-        }if (Objects.equals(env.getDriverType(), "emulatorDeviceFullReset")) {
+        }
+        if (Objects.equals(env.getDriverType(), "emulatorDeviceFullReset")) {
             driver = emulatorDeviceFullReset();
         }
         System.out.println("Setup Android Driver Successfully");
@@ -87,7 +95,7 @@ public class AndroidDriverManager {
                 System.out.println("Tear Down Android Driver Successfully");
             }
         } catch (Exception e) {
-            System.out.println("Could not Quit AndroidDriver Successfully Because: " + e.getMessage());
+            System.out.println("Could not Quit Android Driver Successfully Because: " + e.getMessage());
         }
     }
 }

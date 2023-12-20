@@ -8,6 +8,7 @@ import io.cucumber.testng.CucumberOptions;
 @CucumberOptions(features = {"@target/failedrun.txt"}
         , glue = {"steps"}
         , tags = "not @ignore"
+        , monochrome = true
         , plugin = {
         "pretty",
         "html:target/cucumber-reports",

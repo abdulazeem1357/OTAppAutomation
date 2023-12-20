@@ -16,8 +16,8 @@ public class LoginToTerminalPage extends BasePage {
     @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.ListView/android.widget.TextView")
     private WebElement loginPageTitle;
 
-    @AndroidFindBy(xpath = "/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.ScrollView/android.widget.LinearLayout/android.widget.EditText")
-    private WebElement inputField;
+    @AndroidFindBy(id = "android:id/edit")
+    private WebElement loginDialogueInputField;
 
     @AndroidFindBy(id = "android:id/button1")
     private WebElement okButton;
@@ -34,8 +34,8 @@ public class LoginToTerminalPage extends BasePage {
     }
 
     public void enterUserIDField(String userID) {
-        waiting.clear(inputField);
-        waiting.sendText(inputField, userID);
+        waiting.clear(loginDialogueInputField);
+        waiting.sendText(loginDialogueInputField, userID);
     }
 
     public void clickOkButton() {
@@ -47,8 +47,8 @@ public class LoginToTerminalPage extends BasePage {
     }
 
     public void enterPasswordField(String password) {
-        waiting.clear(inputField);
-        waiting.sendText(inputField, password);
+        waiting.clear(loginDialogueInputField);
+        waiting.sendText(loginDialogueInputField, password);
     }
 
     public void clickTerminalServer() {

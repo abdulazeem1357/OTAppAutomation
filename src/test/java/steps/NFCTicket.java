@@ -190,6 +190,7 @@ public class NFCTicket {
     @Then("The {string} message should be displayed")
     public void theMessageShouldBeDisplayed(String messageNFC) {
 //        SoftAssertManager.getSoftAssert().assertEquals(routePage.getToastMessage(), messageNFC);
+//        SoftAssertManager.getSoftAssert().assertEquals(routePage.getNFCBodyText(), messageNFC);
         String requestBody = tapOutNFCTicket(SVCData);
         String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
         parseResponse(response);

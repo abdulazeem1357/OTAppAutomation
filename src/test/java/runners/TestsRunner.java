@@ -5,9 +5,10 @@ import io.cucumber.testng.CucumberOptions;
 
 // This class defines the CucumberOptions for the feature file to be executed and specifies the glue code package and plugins to be used.
 // The AllureCucumber7Jvm plugin is used to generate Allure reports. The "rerun" plugin is used to rerun failed scenarios.
-@CucumberOptions(features = {"src/test/resources/features/Complete.feature"}
+@CucumberOptions(features = {"src/test/resources/features"}
         , glue = {"steps"}
         , tags = "not @ignore"
+        , monochrome = true
         , plugin = {
         "pretty",
         "html:target/cucumber-reports",

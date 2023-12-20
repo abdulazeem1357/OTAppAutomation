@@ -19,7 +19,7 @@ public class InfrastructureEnv {
 
     public String getDevice() {
 
-        String device = System.getProperty("device", "VirtualDevice");
+        String device = System.getProperty("device", "Honor");
 
         Map<String, String> devices = new HashMap<>();
         devices.put("Honor", "7BQDU17111007827");
@@ -48,7 +48,7 @@ public class InfrastructureEnv {
 
         return "physicalDeviceFullReset";
 
-        //PhysicalDeviceNoReset
+        //physicalDeviceNoReset
         //physicalDeviceFullReset
         //emulatorDeviceNoReset
         //emulatorDeviceFullReset
