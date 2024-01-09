@@ -1,5 +1,6 @@
 package managers;
 
+import enums.DriverType;
 import fundamentals.InfrastructureEnv;
 import helpers.ConfigHelper;
 import io.appium.java_client.android.AndroidDriver;
@@ -7,7 +8,6 @@ import io.appium.java_client.android.options.UiAutomator2Options;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Objects;
 
 public class AndroidDriverManager {
     private AndroidDriver driver;
@@ -17,7 +17,7 @@ public class AndroidDriverManager {
     private final static String APPIUM = "http://localhost:4723/wd/hub";
 
     // InfrastructureEnv class object
-    InfrastructureEnv env = new InfrastructureEnv();
+    private final InfrastructureEnv env;
 
     // Returns the driver
     public AndroidDriver getDriver() {
@@ -25,21 +25,32 @@ public class AndroidDriverManager {
         return driver;
     }
 
+    public AndroidDriverManager(InfrastructureEnv env) {
+        this.env = env;
+    }
+
     // Create driver based on the driverType received from the Infrastructure Class
-    private AndroidDriver createDriver() {
-        if (Objects.equals(env.getDriverType(), "physicalDeviceNoReset")) {
-            driver = physicalDeviceNoReset();
+    public AndroidDriver createDriver() {
+        DriverType driverType = env.getDriverType();
+        switch (driverType) {
+            case PHYSICAL_DEVICE_NO_RESET:
+                driver = physicalDeviceNoReset();
+                break;
+            case PHYSICAL_DEVICE_FULL_RESET:
+                driver = physicalDeviceFullReset();
+                break;
+            case EMULATOR_DEVICE_NO_RESET:
+                driver = emulatorDeviceNoReset();
+                break;
+            case EMULATOR_DEVICE_FULL_RESET:
+                driver = emulatorDeviceFullReset();
+                break;
         }
-        if (Objects.equals(env.getDriverType(), "physicalDeviceFullReset")) {
-            driver = physicalDeviceFullReset();
+        if (driver != null) {
+            System.out.println("Setup Android Driver Successfully");
+        } else {
+            System.out.println("Could Not Setup Android Driver");
         }
-        if (Objects.equals(env.getDriverType(), "emulatorDeviceNoReset")) {
-            driver = emulatorDeviceNoReset();
-        }
-        if (Objects.equals(env.getDriverType(), "emulatorDeviceFullReset")) {
-            driver = emulatorDeviceFullReset();
-        }
-        System.out.println("Setup Android Driver Successfully");
         return driver;
     }
 

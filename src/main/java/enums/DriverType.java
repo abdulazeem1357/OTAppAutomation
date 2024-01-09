@@ -1,0 +1,8 @@
+package enums;
+
+public enum DriverType {
+    PHYSICAL_DEVICE_NO_RESET,
+    PHYSICAL_DEVICE_FULL_RESET,
+    EMULATOR_DEVICE_NO_RESET,
+    EMULATOR_DEVICE_FULL_RESET
+}

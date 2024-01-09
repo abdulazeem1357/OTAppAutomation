@@ -16,13 +16,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Hooks {
     static AppiumServiceInitializer appiumServiceInitializer = new AppiumServiceInitializer();
     static int port = 4723;
     static boolean appiumServerStarted = false;
     TestContext testContext;
+
     public Hooks(TestContext testContext) {
         this.testContext = testContext;
     }
@@ -61,7 +63,7 @@ public class Hooks {
                 System.out.println("Appium Server already stopped on Port - " + port);
             }
         } else {
-            System.out.println("Appium Server is Not Started Programmatically.");
+            System.out.println("Appium Server Is Started Locally on Port - " + port);
         }
     }
 
@@ -80,13 +82,15 @@ public class Hooks {
         System.out.println("/------------------------------------------------------------------------------------------------------/");
         System.out.println(scenario.getName() + " Status - " + scenario.getStatus());
         if (scenario.isFailed()) {
+            String formattedDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+            formattedDateTime = formattedDateTime.replace(":", "-");
             File screenshot = ((TakesScreenshot) testContext.getAndroidDriverManager().getDriver()).getScreenshotAs(OutputType.FILE);
             String rootDirectoryPath = System.getProperty("user.dir");
             String screenShotDirectory = rootDirectoryPath + "/screenshots/" + LocalDate.now().toString() + "/";
             File screenshotFolder = new File(screenShotDirectory);
             screenshotFolder.mkdirs();
-            String screenShotFilePath = screenshotFolder + "/" + LocalTime.now().toString().replaceAll(":", "") + " " + scenario.getName() + ".jpg";
-            File targetFile = new File(screenshotFolder + "/" + LocalTime.now().toString().replaceAll(":", "") + " " + scenario.getName() + ".jpg");
+            String screenShotFilePath = screenshotFolder + "/" + formattedDateTime + " " + scenario.getName() + ".jpg";
+            File targetFile = new File(screenShotFilePath);
             try {
                 FileUtils.copyFile(screenshot, targetFile);
             } catch (IOException e) {

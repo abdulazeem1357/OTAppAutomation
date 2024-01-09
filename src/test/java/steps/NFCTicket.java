@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import cucumber.TestContext;
 import dataProvider.ConfigReader;
+import enums.DeviceType;
 import fundamentals.*;
 import helpers.HttpClientHelper;
 import io.cucumber.java.After;
@@ -152,7 +153,7 @@ public class NFCTicket {
     }
 
     private String tapInNFCTicket(String SVCData) {
-        String device = env.getDevice();
+        DeviceType device = env.getDevice();
         String imei = env.getIMEIForDevice(device);
 
         String requestBody = "{\"IMEI\":\"" + imei + "\",\"data\":{\"service\":\"NFC\",\"command\":\"TAP_SVC_JSON\",\"body\":{\"uuid\":\"" + getTicketRequestUID() + "\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
@@ -161,7 +162,7 @@ public class NFCTicket {
     }
 
     private String tapOutNFCTicket(String SVCData) {
-        String device = env.getDevice();
+        DeviceType device = env.getDevice();
         String imei = env.getIMEIForDevice(device);
 
         String requestBody = "{\"IMEI\":\"" + imei + "\",\"data\":{\"service\":\"NFC\",\"command\":\"REMOVE_TAP_SVC_JSON\",\"body\":{\"uuid\":\"" + getTicketRequestUID() + "\",\"svcData\":" + SVCData + ",\"connected\":true,\"deviceID\":4}}}";
@@ -190,7 +191,7 @@ public class NFCTicket {
     @Then("The {string} message should be displayed")
     public void theMessageShouldBeDisplayed(String messageNFC) {
 //        SoftAssertManager.getSoftAssert().assertEquals(routePage.getToastMessage(), messageNFC);
-//        SoftAssertManager.getSoftAssert().assertEquals(routePage.getNFCBodyText(), messageNFC);
+        SoftAssertManager.getSoftAssert().assertEquals(routePage.getNFCBodyText(), messageNFC);
         String requestBody = tapOutNFCTicket(SVCData);
         String response = httpClientHelper.sendPOSTWithBasicAuth(NOTIFICATION_URL, USERNAME, PASSWORD, requestBody);
         parseResponse(response);

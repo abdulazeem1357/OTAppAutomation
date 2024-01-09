@@ -1,5 +1,8 @@
 package fundamentals;
 
+import enums.DeviceType;
+import enums.DriverType;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,40 +20,22 @@ public class InfrastructureEnv {
         return urls.get(env);
     }
 
-    public String getDevice() {
-
-        String device = System.getProperty("device", "Honor");
-
-        Map<String, String> devices = new HashMap<>();
-        devices.put("Honor", "7BQDU17111007827");
-        devices.put("Motorola", "ZY322PLGM8");
-        devices.put("Huawei", "6PQ7N17605002492");
-        devices.put("VirtualDevice", "emulator-5554");
-
-        return devices.get(device);
+    public DeviceType getDevice() {
+        String device = System.getProperty("device", "HONOR");
+        return DeviceType.valueOf(device.toUpperCase());
     }
 
-    public String getIMEIForDevice(String device) {
-        Map<String, String> imeiMap = new HashMap<>();
-        imeiMap.put("7BQDU17111007827", "862510033859914"); //Honor
-        imeiMap.put("ZY322PLGM8", "351625111274519"); //Motorola
-        imeiMap.put("6PQ7N17605002492", "862789037359960"); //Huawei
-        imeiMap.put("emulator-5554", "358240051111110"); //VirtualDevice
+    public String getIMEIForDevice(DeviceType device) {
+        Map<DeviceType, String> imeiMap = new HashMap<>();
+        imeiMap.put(DeviceType.HONOR, "862510033859914");
+        imeiMap.put(DeviceType.MOTOROLA, "351625111274519");
+        imeiMap.put(DeviceType.HUAWEI, "862789037359960");
+        imeiMap.put(DeviceType.VIRTUAL_DEVICE, "358240051111110");
 
         return imeiMap.get(device);
     }
 
-    public String getDriverType() {
-
-        if (getDevice().equals("VirtualDevice")) {
-            return "emulatorDeviceFullReset";
-        }
-
-        return "physicalDeviceFullReset";
-
-        //physicalDeviceNoReset
-        //physicalDeviceFullReset
-        //emulatorDeviceNoReset
-        //emulatorDeviceFullReset
+    public DriverType getDriverType() {
+        return getDevice() == DeviceType.VIRTUAL_DEVICE ? DriverType.EMULATOR_DEVICE_FULL_RESET : DriverType.PHYSICAL_DEVICE_FULL_RESET;
     }
 }

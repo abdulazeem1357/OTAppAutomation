@@ -36,7 +36,7 @@ public class ConfigHelper {
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetTrue")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(infrastructureEnv.getDevice());
+                    .setUdid(infrastructureEnv.getDevice().getDeviceCode());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
@@ -64,7 +64,7 @@ public class ConfigHelper {
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetFalse")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(infrastructureEnv.getDevice());
+                    .setUdid(infrastructureEnv.getDevice().getDeviceCode());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
@@ -90,7 +90,7 @@ public class ConfigHelper {
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetTrue")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(infrastructureEnv.getDevice());
+                    .setUdid(infrastructureEnv.getDevice().getDeviceCode());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
@@ -116,7 +116,7 @@ public class ConfigHelper {
                     .setAutoGrantPermissions(Boolean.parseBoolean(config.getString("autoGrantPermissionsTrue")))
                     .setNoReset(Boolean.parseBoolean(config.getString("noResetFalse")))
                     .setFullReset(Boolean.parseBoolean(config.getString("fullResetFalse")))
-                    .setUdid(infrastructureEnv.getDevice());
+                    .setUdid(infrastructureEnv.getDevice().getDeviceCode());
 
         } catch (ConfigurationException e) {
             throw new RuntimeException(e);
