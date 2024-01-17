@@ -97,8 +97,25 @@ Run the feature files by executing the following command:
 
 ```mvn clean test```
 
+The test automation project will then run and generate the test reports in the specified format (Allure, TestNG, or Cucumber).
 
-The test automation project will then run and generate the test reports in the specified format (Allure, TestNG or Cucumber).
+## HTML Report using Allure Combine
+### Pre-requisite
+1. Allure should be installed and configured on the system.
+2. Allure-combine should be installed and configured on the system.
+
+### Installing allure-combine
+Run the pip install allure-combine command to install it.
+
+```pip install allure-combine```
+
+### Notes
+Link to allure-combine repo - [Allure Combine Repository](https://github.com/MihanEntalpo/allure-single-html-file)
+
+### Steps
+1. The CMD should be opened at target folder directory where the allure-results folder is placed.
+2. Run the allure generate command to create allure-report folder in the same directory.
+3. Run the allure-combine ./allure-report command to create a complete HTML report which can be shared.
 
 ## Troubleshooting
 Despite thorough testing and preparation, issues may still arise when setting up, configuring, or running the test automation project. To help address any issues that may arise, here is a list of common problems and their possible solutions:
